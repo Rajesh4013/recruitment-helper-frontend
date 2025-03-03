@@ -19,8 +19,11 @@ interface ResourceRequest {
 const ResourceRequests: React.FC = () => {
   const { token, user } = useAuth();
   const [requests, setRequests] = useState<ResourceRequest[]>([]);
+  const [filteredRequests, setFilteredRequests] = useState<ResourceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const navigate = useNavigate();
 
   const handleNewRequest = () => {
@@ -53,6 +56,7 @@ const ResourceRequests: React.FC = () => {
           const data = await fetchResourceRequests(parseInt(user.EmployeeID), token);
           if (data.success) {
             setRequests(data.data);
+            setFilteredRequests(data.data);
           } else {
             setError('Failed to fetch resource requests');
           }
@@ -66,6 +70,15 @@ const ResourceRequests: React.FC = () => {
 
     fetchRequests();
   }, [user?.EmployeeID, token]);
+
+  useEffect(() => {
+    const filtered = requests.filter(request => {
+      const matchesSearchTerm = request.RequestTitle.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus = statusFilter === 'all' || request.Status.toLowerCase() === statusFilter.toLowerCase();
+      return matchesSearchTerm && matchesStatus;
+    });
+    setFilteredRequests(filtered);
+  }, [searchTerm, statusFilter, requests]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -94,12 +107,18 @@ const ResourceRequests: React.FC = () => {
             placeholder="Search requests..."
             className="form-control"
             style={{ maxWidth: '300px' }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <div>
-            <select className="form-control">
+            <select
+              className="form-control"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
               <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
+              <option value="inprogress">In Progress</option>
+              <option value="accepted">Accepted</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
@@ -116,7 +135,7 @@ const ResourceRequests: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {requests.map(request => (
+            {filteredRequests.map(request => (
               <tr key={request.ResourceRequestID}>
                 <td>{request.RequestTitle}</td>
                 <td>

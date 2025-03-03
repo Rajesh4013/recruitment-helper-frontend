@@ -33,7 +33,7 @@ const InterviewSlotInput: React.FC<InterviewSlotInputProps> = ({
   };
 
   return (
-    <div className="form-group">
+    <div className="form-field">
       <label htmlFor={id}>{label}</label>
       <div className="slot-input-container">
         <select

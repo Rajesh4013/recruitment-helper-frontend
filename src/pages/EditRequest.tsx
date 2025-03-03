@@ -201,7 +201,7 @@ const EditRequest: React.FC = () => {
     return (
         <div className="edit-request-container container">
             <ToastContainer />
-            <h1 className="request-title">Edit Request</h1>
+            <h1 className="request-title">{request.RequestTitle}</h1>
             <form className="form" onSubmit={handleSubmit}>
                 <div className="card">
                     <div className="card-body">
@@ -282,7 +282,7 @@ const EditRequest: React.FC = () => {
                     <div className="card-body">
                         <div className="form-row">
                             <div className="form-col">
-                                <div className="form-group">
+                                <div className="form-field">
                                     <label><strong>Budget:</strong></label>
                                     <select
                                         id="budget"
@@ -300,7 +300,7 @@ const EditRequest: React.FC = () => {
                                         ))}
                                     </select>
                                 </div>
-                                <div className="form-group">
+                                <div className="form-field">
                                     <label><strong>Expected Timeline:</strong></label>
                                     <input
                                         type="date"
@@ -312,7 +312,7 @@ const EditRequest: React.FC = () => {
                                         required
                                     />
                                 </div>
-                                <div className="form-group">
+                                <div className="form-field">
                                     <label><strong>Status:</strong></label>
                                     <select
                                         id="status"
@@ -327,7 +327,7 @@ const EditRequest: React.FC = () => {
                                         <option value="Rejected">Rejected</option>
                                     </select>
                                 </div>
-                                <div className="form-group">
+                                <div className="form-field">
                                     <label><strong>Comments:</strong></label>
                                     <textarea
                                         id="comments"
@@ -340,7 +340,7 @@ const EditRequest: React.FC = () => {
                                 </div>
                             </div>
                             <div className="form-col">
-                                <div className="form-group">
+                                <div className="form-field">
                                     <label><strong>Level 1 Panel Interview:</strong></label>
                                     <div className="input-with-suggestions">
                                         <input
@@ -378,7 +378,7 @@ const EditRequest: React.FC = () => {
                                     slots={lookups.interviewSlots}
                                     onChange={(slots) => handleSlotsChange('level1', slots)}
                                 />
-                                <div className="form-group">
+                                <div className="form-field">
                                     <label><strong>Level 2 Panel Interview:</strong></label>
                                     <div className="input-with-suggestions">
                                         <input

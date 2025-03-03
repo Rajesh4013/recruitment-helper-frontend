@@ -483,6 +483,21 @@ button {
   color: var(--text-color);
 }
 
+.card-body .form-field {
+  margin-bottom: 12px;
+}
+
+.card-body .form-field label {
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--secondary-color);
+  margin-bottom: 5px;
+}
+
+.card-body .form-field .value {
+  color: var(--text-color);
+}
+
 .form-row {
   display: flex;
   gap: 20px;
@@ -726,6 +741,47 @@ button {
   background-color: var(--primary-color);
   color: white;
 }
+
+.notifications-card {
+  margin-top: 20px;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.notification-item {
+  padding: 15px;
+  border-radius: 8px;
+  background-color: var(--background-color);
+  transition: background-color 0.3s ease;
+}
+
+.notification-item:hover {
+  background-color: #e9ecef;
+}
+
+.notification-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.notification-meta {
+  font-size: 14px;
+  color: #777;
+}
+
+/* .chart-container {
+  height: 300px;
+}
+
+.small-chart {
+  height: 300px;
+  width: 800px;
+} */
 
 
 
