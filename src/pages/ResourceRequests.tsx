@@ -119,10 +119,14 @@ const ResourceRequests: React.FC = () => {
             {requests.map(request => (
               <tr key={request.ResourceRequestID}>
                 <td>{request.RequestTitle}</td>
-                <td>{request.Status}</td>
+                <td>
+                  <span className={`status-badge status-${request.Status.toLowerCase()}`}>
+                    {request.Status}
+                  </span>
+                </td>
                 <td>{new Date(request.CreatedAt).toLocaleString()}</td>
                 <td>{new Date(request.UpdatedAt).toLocaleString()}</td>
-                <td>
+                <td className="actions-cell">
                   <button className="btn btn-outline" onClick={() => handleView(request.ResourceRequestID)}>
                     <Eye size={16} />
                   </button>

@@ -19,6 +19,7 @@ import Settings from './pages/Settings';
 import Profile from './pages/Profile';
 import ViewRequest from './pages/ViewRequest';
 import EditRequest from './pages/EditRequest';
+import AdminControls from './pages/AdminControls';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -125,6 +126,13 @@ function App() {
               <ProtectedRoute>
                 <Layout toggleTheme={toggleTheme} theme={theme}>
                   <Profile />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin-controls" element={
+              <ProtectedRoute>
+                <Layout toggleTheme={toggleTheme} theme={theme}>
+                  <AdminControls />
                 </Layout>
               </ProtectedRoute>
             } />

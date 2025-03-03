@@ -228,9 +228,9 @@ const RequestForm: React.FC = () => {
     }));
   };
 
-  if (user?.Role === 'Recruiter') {
-    return <div>You do not have permission to access this form.</div>;
-  }
+  // if (user?.Role === 'Recruiter') {
+  //   return <div>You do not have permission to access this form.</div>;
+  // }
 
   return (
     <div className="request-form-container">

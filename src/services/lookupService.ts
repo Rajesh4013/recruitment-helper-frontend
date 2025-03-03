@@ -2,23 +2,23 @@ interface LookupItem {
   // Job Types
   JobTypeID?: number;
   JobTypeName?: string;
-  
+
   // Notice Periods
   NoticePeriodID?: number;
   NoticePeriodName?: string;
-  
+
   // Interview Slots
   InterviewSlotID?: number;
   InterviewSlotName?: string;
-  
+
   // Education
   EducationID?: number;
   EducationName?: string;
-  
+
   // Mode of Work
   ModeOfWorkID?: number;
   ModeOfWorkName?: string;
-  
+
   // Priorities
   PriorityID?: number;
   PriorityName?: string;
@@ -128,7 +128,7 @@ export const lookupService = {
   },
 
   getPriorities: async (token: string): Promise<LookupResponse> => {
-      const response = await fetch(`${API_URL}/priorities`, {
+    const response = await fetch(`${API_URL}/priorities`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -140,7 +140,47 @@ export const lookupService = {
     }
 
     return response.json();
+  },
+
+  addOption: async (category: string, option: string, token: string) => {
+    const response = await fetch(`${API_URL}/${category}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ name: option })
+    });
+    if (!response.ok) {
+      throw new Error('Failed to add option');
+    }
+    return await response.json();
+  },
+
+  removeOption: async (category: string, id: number, token: string) => {
+    const response = await fetch(`${API_URL}/${category}/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) {
+      throw new Error('Failed to remove option');
+    }
+    return await response.json();
+  },
+
+  getLookups: async (token: string) => {
+    const response = await fetch(`${API_URL}/lookups`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch lookups');
+    }
+    return await response.json();
   }
 };
 
-export type { LookupItem }; 
+export type { LookupItem };

@@ -7,6 +7,7 @@ import {
   ChevronLeft,
   Briefcase
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -19,6 +20,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   toggleSidebar,
   onNavigate
 }) => {
+  const { user } = useAuth();
+  const recruiterManagerEmails = [
+    'mailto:dept11.manager@example.com'
+  ]
+
+  const isRecruiterManager = user?.Role === 'Recruiter' && recruiterManagerEmails.includes(user.Email);
+
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
@@ -57,6 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <span className="menu-text">Resource Requests</span>
         </div>
+        {(user?.Role !== 'Recruiter' || isRecruiterManager) && (
         <div 
           className="menu-item"
           onClick={() => onNavigate('/request-form')}
@@ -67,6 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <span className="menu-text">Request Form</span>
         </div>
+        )}
         <div 
           className="menu-item"
           onClick={() => onNavigate('/settings')}
@@ -77,6 +87,18 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <span className="menu-text">Settings</span>
         </div>
+        {(user?.Role === 'Recruiter' || user?.Role === 'Admin') && (
+          <div
+            className="menu-item"
+            onClick={() => onNavigate('/admin-controls')}
+            title={collapsed ? "Admin Controls" : ""}
+          >
+            <div className="menu-icon">
+              <SettingsIcon size={20} />
+            </div>
+            <span className="menu-text">Admin Controls</span>
+          </div>
+        )}
       </nav>
     </aside>
   );
