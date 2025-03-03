@@ -29,7 +29,6 @@ const InterviewSlotInput: React.FC<InterviewSlotInputProps> = ({
   };
 
   const removeSlot = (slotToRemove: string) => {
-    // Allow removing slots regardless of minimum
     onChange(value.filter(slot => slot !== slotToRemove));
   };
 
@@ -46,22 +45,22 @@ const InterviewSlotInput: React.FC<InterviewSlotInputProps> = ({
         >
           <option value="">Select Interview Slot</option>
           {slots
-            .filter(slot => !value.includes(slot.InterviewSlotID.toString()))
+            .filter(slot => !value.includes(slot.InterviewSlotName))
             .map(slot => (
-              <option key={slot.InterviewSlotID} value={slot.InterviewSlotID}>
+              <option key={slot.InterviewSlotID} value={slot.InterviewSlotName}>
                 {slot.InterviewSlotName}
               </option>
             ))}
         </select>
         <div className="selected-slots">
-          {value.map(slotId => {
-            const slot = slots.find(s => s.InterviewSlotID.toString() === slotId);
+          {value.map(slotName => {
+            const slot = slots.find(s => s.InterviewSlotName === slotName);
             return (
-              <div key={slotId} className="selected-slot">
+              <div key={slotName} className="selected-slot">
                 <span>{slot?.InterviewSlotName}</span>
                 <button
                   type="button"
-                  onClick={() => removeSlot(slotId)}
+                  onClick={() => removeSlot(slotName)}
                   className="remove-slot"
                 >
                   ×
@@ -71,7 +70,7 @@ const InterviewSlotInput: React.FC<InterviewSlotInputProps> = ({
           })}
         </div>
         <div className="slots-info">
-          {value.length} of {maxSlots} slots selected 
+          {value.length} of {maxSlots} slots selected
           {value.length < minSlots && (
             <span className="slots-warning">
               (minimum {minSlots} required)
@@ -83,4 +82,4 @@ const InterviewSlotInput: React.FC<InterviewSlotInputProps> = ({
   );
 };
 
-export default InterviewSlotInput; 
+export default InterviewSlotInput;

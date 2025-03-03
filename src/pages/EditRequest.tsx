@@ -42,12 +42,11 @@ const EditRequest: React.FC = () => {
             if (id && token) {
                 try {
                     const data = await editRequestService.getRequestDetails(id, token);
-                    console.log('Form Data:', data);
                     if (data.success && data.data) {
                         setRequest(data.data);
                         const updateTracker = data.data.updateTracker[0];
                         setFormData({
-                            expectedTimeline: updateTracker.ExpectedTimeline || '',
+                            expectedTimeline: updateTracker.ExpectedTimeline ? new Date(updateTracker.ExpectedTimeline).toISOString().split('T')[0] : '',
                             level1PanelInterview: updateTracker.Level1PanelID.toString() || '',
                             level1PanelInterviewName: `${updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.FirstName} ${updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.LastName}` || '',
                             level1PanelInterviewSlots: updateTracker.Level1PanelInterviewSlots ? updateTracker.Level1PanelInterviewSlots.split(', ') : [],

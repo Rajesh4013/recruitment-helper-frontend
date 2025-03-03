@@ -151,7 +151,7 @@ const RequestForm: React.FC = () => {
       education: Number(formData.education),
       level1PanelInterview: Number(formData.level1PanelInterview),
       level2PanelInterview: Number(formData.level2PanelInterview),
-      expectedTimeline: Number(formData.expectedTimeline),
+      // expectedTimeline: formData.expectedTimeline,
       priority: Number(formData.priority),
       experience: Number(formData.experience),
       requiredSkills: formData.requiredSkills.join(', '),
