@@ -143,6 +143,7 @@ const RequestForm: React.FC = () => {
     e.preventDefault();
     const formattedData = {
       ...formData,
+      openPositions: Number(formData.openPositions),
       budget: Number(formData.budget),
       modeOfWork: Number(formData.modeOfWork),
       jobType: Number(formData.jobType),
@@ -172,7 +173,7 @@ const RequestForm: React.FC = () => {
     navigate('/resource-requests');
   };
 
-  const isLocationRequired = formData.modeOfWork === '4';
+  const isLocationRequired = formData.modeOfWork === '1';
 
   const handlePanelSearch = async (value: string) => {
     if (!value) {

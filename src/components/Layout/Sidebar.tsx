@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { user } = useAuth();
   const recruiterManagerEmails = [
-    'mailto:dept11.manager@example.com'
+    'hr.manager@example.com'
   ]
 
   const isRecruiterManager = user?.Role === 'Recruiter' && recruiterManagerEmails.includes(user.Email);

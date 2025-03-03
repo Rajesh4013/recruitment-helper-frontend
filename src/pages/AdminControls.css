@@ -30,7 +30,7 @@
     color: #555;
 }
 
-.form-group input,
+/* .form-group input,
 .form-group select {
     width: 100%;
     padding: 8px;
@@ -38,7 +38,7 @@
     border-radius: 4px;
     font-size: 14px;
     color: #333;
-}
+} */
 
 .form-group input:focus,
 .form-group select:focus {
