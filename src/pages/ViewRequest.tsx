@@ -3,44 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { fetchResourceRequest, updateResourceRequest } from '../services/resourceRequestService';
-
-interface ResourceRequest {
-    JobDescriptionID: number;
-    EmployeeID: number;
-    Status: string;
-    CreatedAt: string;
-    AcceptedAt: string | null;
-    UpdatedAt: string;
-    Feedback: string | null;
-    RequestTitle: string;
-    ResourceRequestID: number;
-    ModeOfWork: string;
-    Education: string;
-    Experience: number;
-    RequiredSkills: string;
-    PreferredSkills: string;
-    Responsibilities: string;
-    Certifications: string;
-    AdditionalReasons: string;
-    Level1PanelInterview: string;
-    Level1PanelInterviewName: string;
-    Level1PanelInterviewSlots: string;
-    Level2PanelInterview: string;
-    Level2PanelInterviewName: string;
-    Level2PanelInterviewSlots: string;
-    OpenPositions: number;
-    RequestedBy: string;
-    RequestedByName: string;
-    Department: string;
-    Role: string;
-    JobType: string;
-    ExpectedTimeline: string;
-    Budget: string;
-    Priority: string;
-    Location: string;
-    NoticePeriod: string;
-}
+import { viewRequestService, ResourceRequest } from '../services/viewRequestService';
 
 const ViewRequest: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -56,7 +19,7 @@ const ViewRequest: React.FC = () => {
         const fetchRequest = async () => {
             if (id && token) {
                 try {
-                    const data = await fetchResourceRequest(id, token);
+                    const data = await viewRequestService.getRequestDetails(id, token);
                     console.log('Request:', data);
                     if (data.success) {
                         setRequest(data.data);
@@ -66,6 +29,7 @@ const ViewRequest: React.FC = () => {
                         setError('Failed to fetch resource request');
                     }
                 } catch (error) {
+                    console.error('Error fetching resource request:', error);
                     setError('Error fetching resource request');
                 } finally {
                     setLoading(false);
@@ -88,10 +52,12 @@ const ViewRequest: React.FC = () => {
         e.preventDefault();
         if (request && token) {
             try {
-                await updateResourceRequest(id, token, { ...request, Status: status, Feedback: feedback });
-                toast.success('Request updated successfully');
-                navigate('/resource-requests');
+                await viewRequestService.updateRequestDetails(request?.ResourceRequestID, token, { Status: status, Feedback: feedback });
+                toast.success('Request updated successfully', {
+                    onClose: () => navigate('/resource-requests')
+                });
             } catch (error) {
+                console.error('Error updating resource request:', error);
                 toast.error('Failed to update request');
             }
         }
@@ -109,73 +75,167 @@ const ViewRequest: React.FC = () => {
         return <div>No request found</div>;
     }
 
-    return (
-        <div className="view-request-container">
-            <ToastContainer />
-            <h1>{request.RequestTitle}</h1>
-            <p><strong>Status:</strong> {request.Status}</p>
-            <p><strong>Created At:</strong> {new Date(request.CreatedAt).toLocaleString()}</p>
-            <p><strong>Updated At:</strong> {new Date(request.UpdatedAt).toLocaleString()}</p>
-            <p><strong>Feedback:</strong> {request.Feedback || 'No feedback'}</p>
-            <p><strong>Mode Of Work:</strong> {request.ModeOfWork}</p>
-            <p><strong>Education:</strong> {request.Education}</p>
-            <p><strong>Experience:</strong> {request.Experience} years</p>
-            <p><strong>Required Skills:</strong> {request.RequiredSkills}</p>
-            <p><strong>Preferred Skills:</strong> {request.PreferredSkills}</p>
-            <p><strong>Responsibilities:</strong> {request.Responsibilities}</p>
-            <p><strong>Certifications:</strong> {request.Certifications}</p>
-            <p><strong>Additional Reasons:</strong> {request.AdditionalReasons}</p>
-            <p><strong>Level 1 Panel Interview:</strong> {request.Level1PanelInterviewName} ({request.Level1PanelInterview})</p>
-            <p><strong>Level 1 Panel Interview Slots:</strong> {request.Level1PanelInterviewSlots}</p>
-            <p><strong>Level 2 Panel Interview:</strong> {request.Level2PanelInterviewName} ({request.Level2PanelInterview})</p>
-            <p><strong>Level 2 Panel Interview Slots:</strong> {request.Level2PanelInterviewSlots}</p>
-            <p><strong>Open Positions:</strong> {request.OpenPositions}</p>
-            <p><strong>Requested By:</strong> {request.RequestedByName} ({request.RequestedBy})</p>
-            <p><strong>Department:</strong> {request.Department}</p>
-            <p><strong>Role:</strong> {request.Role}</p>
-            <p><strong>Job Type:</strong> {request.JobType}</p>
-            <p><strong>Expected Timeline:</strong> {request.ExpectedTimeline}</p>
-            <p><strong>Budget:</strong> {request.Budget}</p>
-            <p><strong>Priority:</strong> {request.Priority}</p>
-            <p><strong>Location:</strong> {request.Location}</p>
-            <p><strong>Notice Period:</strong> {request.NoticePeriod}</p>
+    const jobDescription = request.JobDescription;
+    const updateTracker = request.updateTracker[0];
 
-            {user?.Role === 'Recruiter' && (
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="status">Change Status</label>
-                        <select
-                            id="status"
-                            name="status"
-                            className="form-control"
-                            value={status}
-                            onChange={handleStatusChange}
-                            required
-                        >
-                            <option value="InProgress">In Progress</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Rejected">Rejected</option>
-                        </select>
+    console.log('Update Tracker:', updateTracker);
+
+    return (
+        <div className="view-request-container container">
+            <ToastContainer />
+            <h1 className="request-title">{request.RequestTitle}</h1>
+            <form className="form">
+                <div className="card">
+                    <div className="card-body">
+                        <div className="form-row">
+                            <div className="form-col">
+                                <div className="form-group">
+                                    <label><strong>Priority:</strong></label>
+                                    <span className="value">{updateTracker.Priority.PriorityName || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Requested By:</strong></label>
+                                    <span className="value">{request.Employee.FirstName} {request.Employee.LastName}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Department:</strong></label>
+                                    <span className="value">{request.Employee.Department.DepartmentName || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Role:</strong></label>
+                                    <span className="value">{jobDescription.Role || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Open Positions:</strong></label>
+                                    <span className="value">{jobDescription.OpenPositions || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Job Type:</strong></label>
+                                    <span className="value">{jobDescription.JobType.JobTypeName || 'Not provided'}</span>
+                                </div>
+                            </div>
+                            <div className="form-col">
+                                <div className="form-group">
+                                    <label><strong>Budget:</strong></label>
+                                    <span className="value">{updateTracker.BudgetRanges.BudgetName || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Location:</strong></label>
+                                    <span className="value">{jobDescription.Location || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Expected Timeline:</strong></label>
+                                    <span className="value">{updateTracker.ExpectedTimeline || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Notice Period:</strong></label>
+                                    <span className="value">{jobDescription.NoticePeriod.NoticePeriodName || 'Not provided'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="form-row">
+                            <div className="form-col">
+                                <div className="form-group">
+                                    <label><strong>Status:</strong></label>
+                                    <span className="value">{request.Status || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Created At:</strong></label>
+                                    <span className="value">{new Date(request.CreatedAt).toLocaleString()}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Updated At:</strong></label>
+                                    <span className="value">{new Date(request.UpdatedAt).toLocaleString()}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Feedback:</strong></label>
+                                    <span className="value">{request.Feedback || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Mode Of Work:</strong></label>
+                                    <span className="value">{jobDescription.ModeOfWork.ModeOfWorkName || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Education:</strong></label>
+                                    <span className="value">{jobDescription.Education.EducationName || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Experience:</strong></label>
+                                    <span className="value">{jobDescription.Experience ? `${jobDescription.Experience} years` : 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Required Skills:</strong></label>
+                                    <span className="value">{jobDescription.RequiredTechnicalSkills || 'Not provided'}</span>
+                                </div>
+                            </div>
+                            <div className="form-col">
+                                <div className="form-group">
+                                    <label><strong>Preferred Skills:</strong></label>
+                                    <span className="value">{jobDescription.PreferredTechnicalSkills || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Responsibilities:</strong></label>
+                                    <span className="value">{jobDescription.Responsibility || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Certifications:</strong></label>
+                                    <span className="value">{jobDescription.Certifications || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Additional Reasons:</strong></label>
+                                    <span className="value">{jobDescription.AdditionalReasons || 'Not provided'}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Level 1 Panel Interview:</strong></label>
+                                    <span className="value">{updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.FirstName} {updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.LastName} ({updateTracker.Level1PanelInterviewSlots || 'Not provided'})</span>
+                                </div>
+                                <div className="form-group">
+                                    <label><strong>Level 2 Panel Interview:</strong></label>
+                                    <span className="value">{updateTracker.Employee_UpdateTracker_Level2PanelIDToEmployee.FirstName} {updateTracker.Employee_UpdateTracker_Level2PanelIDToEmployee.LastName} ({updateTracker.Level2PanelInterviewSlots || 'Not provided'})</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="feedback">Feedback</label>
-                        <textarea
-                            id="feedback"
-                            name="feedback"
-                            className="form-control"
-                            value={feedback}
-                            onChange={handleFeedbackChange}
-                            required
-                        />
+                </div>
+
+                {user?.Role === 'Recruiter' && (
+                    <div className="card">
+                        <div className="card-body">
+                            <div className="form-group small-input">
+                                <label htmlFor="status">Change Status</label>
+                                <select
+                                    id="status"
+                                    name="status"
+                                    className="form-control small-input"
+                                    value={status}
+                                    onChange={handleStatusChange}
+                                    required
+                                >
+                                    <option value="InProgress">In Progress</option>
+                                    <option value="Accepted">Accepted</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
+                            <div className="form-group small-input">
+                                <label htmlFor="feedback">Feedback</label>
+                                <textarea
+                                    id="feedback"
+                                    name="feedback"
+                                    className="form-control small-input"
+                                    value={feedback}
+                                    onChange={handleFeedbackChange}
+                                    required
+                                />
+                            </div>
+                            <div className="form-actions">
+                                <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+                                    Update Request
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div className="form-actions">
-                        <button type="submit" className="btn btn-primary">
-                            Update Request
-                        </button>
-                    </div>
-                </form>
-            )}
+                )}
+            </form>
         </div>
     );
 };
