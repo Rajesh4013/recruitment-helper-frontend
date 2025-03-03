@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({
       </div>
       <div className="header-right">
         <div className="user-info">
-          <span className="user-name">{user?.name}</span>
+          <span className="user-name">{user?.FirstName} { user?.LastName}</span>
         </div>
         <div className="theme-toggle" onClick={toggleTheme}>
           {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}

@@ -1,3 +1,5 @@
+const VITE_API_URL = import.meta.env.VITE_API_URL;
+
 interface Employee {
   EmployeeID: number;
   FirstName: string;
@@ -51,7 +53,7 @@ interface EmployeeResponse {
 
 export const employeeService = {
   searchEmployees: async (searchTerm: string, token: string): Promise<ApiResponse<Employee[]>> => {
-    const response = await fetch(`http://localhost:3001/api/employees?search=${searchTerm}`, {
+    const response = await fetch(`${VITE_API_URL}/employees?search=${searchTerm}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -66,7 +68,7 @@ export const employeeService = {
   },
 
   getEmployeeById: async (employeeId: string, token: string): Promise<ApiResponse<Employee[]>> => {
-    const response = await fetch(`http://localhost:3001/api/employees?employeeId=${employeeId}`, {
+    const response = await fetch(`${VITE_API_URL}/employees?employeeId=${employeeId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -85,7 +87,7 @@ export const employeeService = {
   },
 
   getEmployeeDetails: async (employeeId: string, token: string): Promise<EmployeeResponse> => {
-    const response = await fetch(`http://localhost:3001/api/employees/${employeeId}`, {
+    const response = await fetch(`${VITE_API_URL}/employees/${employeeId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
