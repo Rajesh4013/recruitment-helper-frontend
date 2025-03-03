@@ -123,15 +123,15 @@ const ResourceRequests: React.FC = () => {
                 <td>{new Date(request.CreatedAt).toLocaleString()}</td>
                 <td>{new Date(request.UpdatedAt).toLocaleString()}</td>
                 <td>
-                  <button className="btn btn-outline" onClick={() => handleView(request.JobDescriptionID)}>
+                  <button className="btn btn-outline" onClick={() => handleView(request.ResourceRequestID)}>
                     <Eye size={16} />
                   </button>
                   {user?.Role !== 'Recruiter' && (
                     <>
-                      <button className="btn btn-outline" onClick={() => handleEdit(request.JobDescriptionID)}>
+                      <button className="btn btn-outline" onClick={() => handleEdit(request.ResourceRequestID)}>
                         <Edit size={16} />
                       </button>
-                      <button className="btn btn-outline" onClick={() => handleDelete(request.JobDescriptionID)}>
+                      <button className="btn btn-outline" onClick={() => handleDelete(request.ResourceRequestID)}>
                         <Trash size={16} />
                       </button>
                     </>
