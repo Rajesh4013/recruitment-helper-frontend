@@ -38,11 +38,11 @@ const Header: React.FC<HeaderProps> = ({
         <h2>Recruitment Helper</h2>
       </div>
       <div className="header-right">
-        <div className="user-info">
-          <span className="user-name">{user?.FirstName} { user?.LastName}</span>
-        </div>
         <div className="theme-toggle" onClick={toggleTheme}>
           {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        </div>
+        <div className="user-info">
+          <span className="user-name">{user?.FirstName} { user?.LastName}</span>
         </div>
         <div className="profile-dropdown">
           <div className="dropdown-toggle" onClick={toggleDropdown}>

@@ -15,6 +15,16 @@ const ViewRequest: React.FC = () => {
     const [status, setStatus] = useState('');
     const [feedback, setFeedback] = useState('');
 
+    const parseSlots = (slots: string) => {
+        try {
+            const parsedSlots = JSON.parse(slots);
+            return parsedSlots.map((slot: { id: number; name: string }) => slot.name).join(', ');
+        } catch (error) {
+            console.error('Error parsing slots:', error);
+            return 'Not provided';
+        }
+    };
+
     useEffect(() => {
         const fetchRequest = async () => {
             if (id && token) {
@@ -109,12 +119,12 @@ const ViewRequest: React.FC = () => {
                                     <label><strong>Open Positions:</strong></label>
                                     <span className="value">{jobDescription.OpenPositions || 'Not provided'}</span>
                                 </div>
+                            </div>
+                            <div className="form-col">
                                 <div className="form-group">
                                     <label><strong>Job Type:</strong></label>
                                     <span className="value">{jobDescription.JobType.JobTypeName || 'Not provided'}</span>
                                 </div>
-                            </div>
-                            <div className="form-col">
                                 <div className="form-group">
                                     <label><strong>Budget:</strong></label>
                                     <span className="value">{updateTracker.BudgetRanges.BudgetName || 'Not provided'}</span>
@@ -187,11 +197,11 @@ const ViewRequest: React.FC = () => {
                                 </div>
                                 <div className="form-group">
                                     <label><strong>Level 1 Panel Interview:</strong></label>
-                                    <span className="value">{updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.FirstName} {updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.LastName} ({updateTracker.Level1PanelInterviewSlots || 'Not provided'})</span>
+                                    <span className="value">{updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.FirstName} {updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.LastName} ({parseSlots(updateTracker.Level1PanelInterviewSlots)})</span>
                                 </div>
                                 <div className="form-group">
                                     <label><strong>Level 2 Panel Interview:</strong></label>
-                                    <span className="value">{updateTracker.Employee_UpdateTracker_Level2PanelIDToEmployee.FirstName} {updateTracker.Employee_UpdateTracker_Level2PanelIDToEmployee.LastName} ({updateTracker.Level2PanelInterviewSlots || 'Not provided'})</span>
+                                    <span className="value">{updateTracker.Employee_UpdateTracker_Level2PanelIDToEmployee.FirstName} {updateTracker.Employee_UpdateTracker_Level2PanelIDToEmployee.LastName} ({parseSlots(updateTracker.Level2PanelInterviewSlots)})</span>
                                 </div>
                             </div>
                         </div>

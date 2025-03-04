@@ -28,6 +28,8 @@ const EditRequest: React.FC = () => {
         status: '',
         comments: ''
     });
+    console.log("request", request);
+    console.log(formData);
     const [lookups, setLookups] = useState({
         priorities: [] as LookupItem[],
         budgets: [] as LookupItem[],
@@ -36,6 +38,16 @@ const EditRequest: React.FC = () => {
     const [panelSearchResults, setPanelSearchResults] = useState<Employee[]>([]);
     const [showLevel1Suggestions, setShowLevel1Suggestions] = useState(false);
     const [showLevel2Suggestions, setShowLevel2Suggestions] = useState(false);
+
+    const parseSlots = (slots: string) => {
+        try {
+            const parsedSlots = JSON.parse(slots);
+            return parsedSlots.map((slot: { id: number; name: string }) => slot.id);
+        } catch (error) {
+            console.error('Error parsing slots:', error);
+            return [];
+        }
+    };
 
     useEffect(() => {
         const fetchRequest = async () => {
@@ -49,10 +61,10 @@ const EditRequest: React.FC = () => {
                             expectedTimeline: updateTracker.ExpectedTimeline ? new Date(updateTracker.ExpectedTimeline).toISOString().split('T')[0] : '',
                             level1PanelInterview: updateTracker.Level1PanelID.toString() || '',
                             level1PanelInterviewName: `${updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.FirstName} ${updateTracker.Employee_UpdateTracker_Level1PanelIDToEmployee.LastName}` || '',
-                            level1PanelInterviewSlots: updateTracker.Level1PanelInterviewSlots ? updateTracker.Level1PanelInterviewSlots.split(', ') : [],
+                            level1PanelInterviewSlots: updateTracker.Level1PanelInterviewSlots ? parseSlots(updateTracker.Level1PanelInterviewSlots) : [],
                             level2PanelInterview: updateTracker.Level2PanelID.toString() || '',
                             level2PanelInterviewName: `${updateTracker.Employee_UpdateTracker_Level2PanelIDToEmployee.FirstName} ${updateTracker.Employee_UpdateTracker_Level2PanelIDToEmployee.LastName}` || '',
-                            level2PanelInterviewSlots: updateTracker.Level2PanelInterviewSlots ? updateTracker.Level2PanelInterviewSlots.split(', ') : [],
+                            level2PanelInterviewSlots: updateTracker.Level2PanelInterviewSlots ? parseSlots(updateTracker.Level2PanelInterviewSlots) : [],
                             budget: updateTracker.BudgetID.toString() || '',
                             priority: updateTracker.PriorityID.toString() || '',
                             status: updateTracker.Status || '',
@@ -231,8 +243,6 @@ const EditRequest: React.FC = () => {
                                     <label><strong>Job Type:</strong></label>
                                     <span className="value">{jobDescription.JobType.JobTypeName || 'Not provided'}</span>
                                 </div>
-                            </div>
-                            <div className="form-col">
                                 <div className="form-group">
                                     <label><strong>Location:</strong></label>
                                     <span className="value">{jobDescription.Location || 'Not provided'}</span>
@@ -245,6 +255,8 @@ const EditRequest: React.FC = () => {
                                     <label><strong>Mode Of Work:</strong></label>
                                     <span className="value">{jobDescription.ModeOfWork.ModeOfWorkName || 'Not provided'}</span>
                                 </div>
+                            </div>
+                            <div className="form-col">
                                 <div className="form-group">
                                     <label><strong>Education:</strong></label>
                                     <span className="value">{jobDescription.Education.EducationName || 'Not provided'}</span>

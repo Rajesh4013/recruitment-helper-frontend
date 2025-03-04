@@ -149,7 +149,7 @@ export const lookupService = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ name: option })
+      body: JSON.stringify(option)
     });
     if (!response.ok) {
       throw new Error('Failed to add option');

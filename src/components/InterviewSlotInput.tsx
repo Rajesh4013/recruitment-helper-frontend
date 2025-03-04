@@ -3,9 +3,9 @@ import React from 'react';
 interface InterviewSlotInputProps {
   id: string;
   label: string;
-  value: string[];
+  value: number[];
   slots: Array<{ InterviewSlotID: number; InterviewSlotName: string }>;
-  onChange: (slots: string[]) => void;
+  onChange: (slots: number[]) => void;
   maxSlots?: number;
   minSlots?: number;
 }
@@ -20,15 +20,15 @@ const InterviewSlotInput: React.FC<InterviewSlotInputProps> = ({
   minSlots = 3
 }) => {
   const handleSlotChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedSlot = e.target.value;
-    if (selectedSlot && !value.includes(selectedSlot)) {
+    const selectedSlotId = Number(e.target.value);
+    if (selectedSlotId && !value.includes(selectedSlotId)) {
       if (value.length < maxSlots) {
-        onChange([...value, selectedSlot]);
+        onChange([...value, selectedSlotId]);
       }
     }
   };
 
-  const removeSlot = (slotToRemove: string) => {
+  const removeSlot = (slotToRemove: number) => {
     onChange(value.filter(slot => slot !== slotToRemove));
   };
 
@@ -45,22 +45,22 @@ const InterviewSlotInput: React.FC<InterviewSlotInputProps> = ({
         >
           <option value="">Select Interview Slot</option>
           {slots
-            .filter(slot => !value.includes(slot.InterviewSlotName))
+            .filter(slot => !value.includes(slot.InterviewSlotID))
             .map(slot => (
-              <option key={slot.InterviewSlotID} value={slot.InterviewSlotName}>
+              <option key={slot.InterviewSlotID} value={slot.InterviewSlotID}>
                 {slot.InterviewSlotName}
               </option>
             ))}
         </select>
         <div className="selected-slots">
-          {value.map(slotName => {
-            const slot = slots.find(s => s.InterviewSlotName === slotName);
+          {value.map(slotId => {
+            const slot = slots.find(s => s.InterviewSlotID === slotId);
             return (
-              <div key={slotName} className="selected-slot">
+              <div key={slotId} className="selected-slot">
                 <span>{slot?.InterviewSlotName}</span>
                 <button
                   type="button"
-                  onClick={() => removeSlot(slotName)}
+                  onClick={() => removeSlot(slotId)}
                   className="remove-slot"
                 >
                   ×
