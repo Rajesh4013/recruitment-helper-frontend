@@ -34,8 +34,12 @@ const ResourceRequests: React.FC = () => {
     navigate(`/resource-requests/view/${id}`);
   };
 
-  const handleEdit = (id: number) => {
-    navigate(`/resource-requests/edit/${id}`);
+  const handleEdit = (request: ResourceRequest) => {
+    if (request.EmployeeID === parseInt(user?.EmployeeID || '')) {
+      navigate(`/request-form/edit/${request.ResourceRequestID}`);
+    } else {
+      navigate(`/resource-requests/edit/${request.ResourceRequestID}`);
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -91,7 +95,7 @@ const ResourceRequests: React.FC = () => {
   return (
     <div className="resource-requests-container">
       <div className="flex justify-between align-center mb-4">
-        <h1>Resource Requests</h1>
+        <h1>Requests Placed</h1>
         {user?.Role !== 'Recruiter' && (
           <button className="btn btn-primary" onClick={handleNewRequest}>
             <Plus size={16} style={{ marginRight: '5px' }} />
@@ -151,7 +155,7 @@ const ResourceRequests: React.FC = () => {
                   </button>
                   {user?.Role !== 'Recruiter' && (
                     <>
-                      <button className="btn btn-outline" onClick={() => handleEdit(request.ResourceRequestID)}>
+                      <button className="btn btn-outline" onClick={() => handleEdit(request)}>
                         <Edit size={16} />
                       </button>
                       <button className="btn btn-outline" onClick={() => handleDelete(request.ResourceRequestID)}>

@@ -78,7 +78,7 @@ const SkillsInput: React.FC<SkillsInputProps> = ({
       return;
     }
 
-    if (!value.includes(skillName) && !disabledSkills.includes(skillName)) {
+    if (!value.includes(skillName) && !disabledSkills?.includes(skillName)) {
       onChange([...value, skillName]);
     }
     setInputValue('');
@@ -131,7 +131,7 @@ const SkillsInput: React.FC<SkillsInputProps> = ({
                       <li
                         key={skill.SkillID}
                         className={`suggestion-item ${
-                          value.includes(skill.SkillName) || disabledSkills.includes(skill.SkillName)
+                          value.includes(skill.SkillName) || disabledSkills?.includes(skill.SkillName)
                             ? 'disabled'
                             : ''
                         }`}
@@ -180,7 +180,7 @@ const SkillsInput: React.FC<SkillsInputProps> = ({
         {error && <div className="error-message">{error}</div>}
 
         <div className="selected-skills">
-          {value.map((skill) => (
+          {value?.map((skill) => (
             <span key={skill} className="skill-tag">
               {skill}
               <button
@@ -198,4 +198,4 @@ const SkillsInput: React.FC<SkillsInputProps> = ({
   );
 };
 
-export default SkillsInput; 
+export default SkillsInput;

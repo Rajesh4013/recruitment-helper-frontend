@@ -66,9 +66,9 @@ export const editRequestService = {
     }
   },
 
-  updateRequestDetails: async (requestId: string, token: string, updatedRequest: Partial<ResourceRequest>): Promise<ApiResponse<ResourceRequest>> => {
+  updateRequestDetails: async (jobDescriptionId: string, token: string, updatedRequest: Partial<ResourceRequest>): Promise<ApiResponse<ResourceRequest>> => {
     try {
-      const response = await fetch(`${VITE_API_URL}/resource-request/${requestId}`, {
+      const response = await fetch(`${VITE_API_URL}/update-tracker/${jobDescriptionId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

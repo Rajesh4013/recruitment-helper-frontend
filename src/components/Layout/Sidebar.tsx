@@ -5,7 +5,8 @@ import {
   FileText, 
   Settings as SettingsIcon, 
   ChevronLeft,
-  Briefcase
+  Briefcase,
+  UserPlus
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -63,7 +64,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <div className="menu-icon">
             <Users size={20} />
           </div>
-          <span className="menu-text">Resource Requests</span>
+          <span className="menu-text">Requests Placed</span>
         </div>
         {(user?.Role !== 'Recruiter' || isRecruiterManager) && (
         <div 
@@ -74,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <div className="menu-icon">
             <FileText size={20} />
           </div>
-          <span className="menu-text">Request Form</span>
+          <span className="menu-text">Raise A Request</span>
         </div>
         )}
         <div 
@@ -97,6 +98,18 @@ const Sidebar: React.FC<SidebarProps> = ({
               <SettingsIcon size={20} />
             </div>
             <span className="menu-text">Admin Controls</span>
+          </div>
+        )}
+        {isRecruiterManager && (
+          <div
+            className="menu-item"
+            onClick={() => onNavigate('/add-user')}
+            title={collapsed ? "Add User" : ""}
+          >
+            <div className="menu-icon">
+              <UserPlus size={20} />
+            </div>
+            <span className="menu-text">Add User</span>
           </div>
         )}
       </nav>

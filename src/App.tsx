@@ -20,6 +20,8 @@ import Profile from './pages/Profile';
 import ViewRequest from './pages/ViewRequest';
 import EditRequest from './pages/EditRequest';
 import AdminControls from './pages/AdminControls';
+import EditRequestForm from './pages/EditRequestForm';
+import AddUser from './pages/AddUser';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -122,6 +124,13 @@ function App() {
                 </Layout>
               </ProtectedRoute>
             } />
+            <Route path="/request-form/edit/:id" element={
+              <ProtectedRoute>
+                <Layout toggleTheme={toggleTheme} theme={theme}>
+                  <EditRequestForm />
+                </Layout>
+              </ProtectedRoute>
+            } />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Layout toggleTheme={toggleTheme} theme={theme}>
@@ -133,6 +142,13 @@ function App() {
               <ProtectedRoute>
                 <Layout toggleTheme={toggleTheme} theme={theme}>
                   <AdminControls />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/add-user" element={
+              <ProtectedRoute>
+                <Layout toggleTheme={toggleTheme} theme={theme}>
+                  <AddUser />
                 </Layout>
               </ProtectedRoute>
             } />

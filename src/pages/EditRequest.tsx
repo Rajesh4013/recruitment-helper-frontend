@@ -174,7 +174,7 @@ const EditRequest: React.FC = () => {
         console.log('Form Data:', formData);
         if (request && token) {
             try {
-                await editRequestService.updateRequestDetails(request?.ResourceRequestID, token, {
+                await editRequestService.updateRequestDetails(request?.JobDescriptionID, token, {
                     ExpectedTimeline: formData.expectedTimeline,
                     Level1PanelInterview: formData.level1PanelInterview,
                     Level1PanelInterviewSlots: formData.level1PanelInterviewSlots.join(', '),
@@ -183,7 +183,7 @@ const EditRequest: React.FC = () => {
                     Budget: formData.budget,
                     Priority: formData.priority,
                     Status: formData.status,
-                    Feedback: formData.comments
+                    Comments: formData.comments
                 });
                 toast.success('Request updated successfully', {
                     onClose: () => navigate('/resource-requests')
