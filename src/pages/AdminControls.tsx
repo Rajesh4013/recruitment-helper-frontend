@@ -4,6 +4,7 @@ import { lookupService, LookupItem } from '../services/lookupService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './AdminControls.css'; // Import the CSS file
+import { X } from 'lucide-react';
 
 const AdminControls: React.FC = () => {
     const { token, user } = useAuth();
@@ -18,6 +19,7 @@ const AdminControls: React.FC = () => {
     });
     const [newOption, setNewOption] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('jobTypes');
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         const fetchLookups = async () => {
@@ -55,11 +57,7 @@ const AdminControls: React.FC = () => {
         };
 
         fetchLookups();
-    }, [token]);
-
-    useEffect(() => {
-        // This effect will run whenever the lookups state changes
-    }, [lookups]);
+    }, [token, refresh]);
 
     const handleAddOption = async () => {
         if (!newOption) return;
@@ -104,22 +102,48 @@ const AdminControls: React.FC = () => {
             await lookupService.addOption(endpoint, body, token!);
             toast.success('Option added successfully');
             setNewOption('');
+            setRefresh(prev => !prev); // Trigger refresh
 
-            // Fetch updated lookups
-            const updatedLookups = await lookupService.getLookups(token!);
-            setLookups(updatedLookups.data);
         } catch (error) {
             toast.error('Failed to add option');
         }
     };
 
     const handleRemoveOption = async (category: string, id: number) => {
+        console.log('Removing option:', category, id);
         try {
-            await lookupService.removeOption(category, id, token!);
-            toast.success('Option removed successfully');
-            const updatedLookups = await lookupService.getLookups(token!);
-            setLookups(updatedLookups.data);
+            let endpoint = '';
 
+            switch (category) {
+                case 'interviewSlots':
+                    endpoint = 'interview-slot';
+                    break;
+                case 'noticePeriods':
+                    endpoint = 'notice-period';
+                    break;
+                case 'education':
+                    endpoint = 'education';
+                    break;
+                case 'modeOfWork':
+                    endpoint = 'modes-of-work';
+                    break;
+                case 'priorities':
+                    endpoint = 'priority';
+                    break;
+                case 'budgets':
+                    endpoint = 'budget-range';
+                    break;
+                case 'jobTypes':
+                    endpoint = 'job-type';
+                    break;
+                default:
+                    toast.error('Invalid category selected');
+                    return;
+            }
+
+            await lookupService.removeOption(endpoint, id, token!);
+            toast.success('Option removed successfully');
+            setRefresh(prev => !prev); // Trigger refresh
         } catch (error) {
             toast.error('Failed to remove option');
         }
@@ -175,7 +199,6 @@ const AdminControls: React.FC = () => {
         <div className="admin-controls-container">
             <ToastContainer />
             <h1>Admin Controls</h1>
-            {/* <div className="form-group-inline"> */}
             <div className="form-group">
                 <label htmlFor="category">Select Category</label>
                 <select
@@ -208,7 +231,6 @@ const AdminControls: React.FC = () => {
             <button className="btn btn-primary" onClick={handleAddOption}>
                 Add Option
             </button>
-            {/* </div> */}
             <div className="options-list">
                 <h2>Existing Options</h2>
                 <ul>
@@ -216,7 +238,7 @@ const AdminControls: React.FC = () => {
                         <li key={getOptionId(item)} className="option-item">
                             <span className="option-name">{getOptionName(item)}</span>
                             <button className="btn btn-danger btn-sm" onClick={() => handleRemoveOption(selectedCategory, getOptionId(item)!)}>
-                                Remove
+                                <X size={16} />
                             </button>
                         </li>
                     ))}

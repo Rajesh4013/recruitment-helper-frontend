@@ -6,7 +6,8 @@ import {
   Settings as SettingsIcon, 
   ChevronLeft,
   Briefcase,
-  UserPlus
+  UserPlus,
+  ShieldAlert
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -78,16 +79,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           <span className="menu-text">Raise A Request</span>
         </div>
         )}
-        <div 
-          className="menu-item"
-          onClick={() => onNavigate('/settings')}
-          title={collapsed ? "Settings" : ""}
-        >
-          <div className="menu-icon">
-            <SettingsIcon size={20} />
-          </div>
-          <span className="menu-text">Settings</span>
-        </div>
         {(user?.Role === 'Recruiter' || user?.Role === 'Admin') && (
           <div
             className="menu-item"
@@ -95,7 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             title={collapsed ? "Admin Controls" : ""}
           >
             <div className="menu-icon">
-              <SettingsIcon size={20} />
+              <ShieldAlert size={20} />
             </div>
             <span className="menu-text">Admin Controls</span>
           </div>
@@ -112,6 +103,16 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span className="menu-text">Add User</span>
           </div>
         )}
+         <div 
+          className="menu-item"
+          onClick={() => onNavigate('/settings')}
+          title={collapsed ? "Settings" : ""}
+        >
+          <div className="menu-icon">
+            <SettingsIcon size={20} />
+          </div>
+          <span className="menu-text">Settings</span>
+        </div>
       </nav>
     </aside>
   );

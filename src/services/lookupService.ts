@@ -171,7 +171,7 @@ export const lookupService = {
   },
 
   getLookups: async (token: string) => {
-    const response = await fetch(`${API_URL}/lookups`, {
+    const response = await fetch(`${API_URL}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

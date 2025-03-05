@@ -213,7 +213,7 @@ const ViewRequest: React.FC = () => {
                         <div className="card-body">
                             <div className="form-group small-input">
                                 <label htmlFor="status">Change Status</label>
-                                <select
+                                <select style={{ width: '75%' }}
                                     id="status"
                                     name="status"
                                     className="form-control small-input"
@@ -228,7 +228,7 @@ const ViewRequest: React.FC = () => {
                             </div>
                             <div className="form-group small-input">
                                 <label htmlFor="feedback">Feedback</label>
-                                <textarea
+                                <textarea style={{ width: '75%' }}
                                     id="feedback"
                                     name="feedback"
                                     className="form-control small-input"
