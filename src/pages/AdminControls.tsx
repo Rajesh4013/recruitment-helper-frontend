@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { lookupService, LookupItem } from '../services/lookupService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
 import './AdminControls.css'; // Import the CSS file
 import { X } from 'lucide-react';
 
@@ -196,55 +197,61 @@ const AdminControls: React.FC = () => {
     }
 
     return (
-        <div className="admin-controls-container">
-            <ToastContainer />
-            <h1>Admin Controls</h1>
-            <div className="form-group">
-                <label htmlFor="category">Select Category</label>
-                <select
-                    id="category"
-                    name="category"
-                    className="form-control"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                    <option value="jobTypes">Job Types</option>
-                    <option value="noticePeriods">Notice Periods</option>
-                    <option value="interviewSlots">Interview Slots</option>
-                    <option value="education">Education</option>
-                    <option value="modeOfWork">Mode Of Work</option>
-                    <option value="priorities">Priorities</option>
-                    <option value="budgets">Budgets</option>
-                </select>
+        <>
+            <nav className="breadcrumb">
+                <Link to="/dashboard" className="breadcrumb-item">Dashboard</Link>
+                <span className="breadcrumb-item active">Admin Controls</span>
+            </nav>
+            <div className="admin-controls-container">
+                <ToastContainer />
+                <h1>Admin Controls</h1>
+                <div className="form-group">
+                    <label htmlFor="category">Select Category</label>
+                    <select
+                        id="category"
+                        name="category"
+                        className="form-control"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                        <option value="jobTypes">Job Types</option>
+                        <option value="noticePeriods">Notice Periods</option>
+                        <option value="interviewSlots">Interview Slots</option>
+                        <option value="education">Education</option>
+                        <option value="modeOfWork">Mode Of Work</option>
+                        <option value="priorities">Priorities</option>
+                        <option value="budgets">Budgets</option>
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="newOption">New Option</label>
+                    <input
+                        type="text"
+                        id="newOption"
+                        name="newOption"
+                        className="form-control"
+                        value={newOption}
+                        onChange={(e) => setNewOption(e.target.value)}
+                    />
+                </div>
+                <button className="btn btn-primary" onClick={handleAddOption}>
+                    Add Option
+                </button>
+                <div className="options-list">
+                    <h2>Existing Options</h2>
+                    <ul>
+                        {lookups[selectedCategory].map((item) => (
+                            <li key={getOptionId(item)} className="option-item">
+                                <span className="option-name">{getOptionName(item)}</span>
+                                <button className="btn btn-danger btn-sm" onClick={() => handleRemoveOption(selectedCategory, getOptionId(item)!)}>
+                                    <X size={16} />
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
-            <div className="form-group">
-                <label htmlFor="newOption">New Option</label>
-                <input
-                    type="text"
-                    id="newOption"
-                    name="newOption"
-                    className="form-control"
-                    value={newOption}
-                    onChange={(e) => setNewOption(e.target.value)}
-                />
-            </div>
-            <button className="btn btn-primary" onClick={handleAddOption}>
-                Add Option
-            </button>
-            <div className="options-list">
-                <h2>Existing Options</h2>
-                <ul>
-                    {lookups[selectedCategory].map((item) => (
-                        <li key={getOptionId(item)} className="option-item">
-                            <span className="option-name">{getOptionName(item)}</span>
-                            <button className="btn btn-danger btn-sm" onClick={() => handleRemoveOption(selectedCategory, getOptionId(item)!)}>
-                                <X size={16} />
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </div>
+        </>
     );
 };
 

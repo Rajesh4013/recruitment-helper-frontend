@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import SkillsInput from '../components/SkillsInput';
 import { employeeService, EmployeeDetails, Employee } from '../services/employeeService';
@@ -236,6 +236,11 @@ const RequestForm: React.FC = () => {
   return (
     <div className="request-form-container">
       <ToastContainer />
+      <nav className="breadcrumb">
+        <Link to="/dashboard" className="breadcrumb-item">Dashboard</Link>
+        <Link to="/resource-requests" className="breadcrumb-item">Requests Placed</Link>
+        <span className="breadcrumb-item active">Raise a Request</span>
+      </nav>
       <form onSubmit={handleSubmit}>
         <div className="card">
           <input

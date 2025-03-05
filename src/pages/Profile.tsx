@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import './Profile.css'; // Import the CSS file
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
@@ -31,6 +33,11 @@ const Profile: React.FC = () => {
 
   return (
     <div className="profile-container">
+      <nav className="breadcrumb">
+        <Link to="/dashboard" className="breadcrumb-item">Dashboard</Link>
+        <span className="breadcrumb-item active">Profile</span>
+      </nav>
+      <h1 className="page-title">Profile</h1>
       <div className="profile-header">
         <div className="profile-avatar">
           {user?.FirstName?.charAt(0) || 'U'}

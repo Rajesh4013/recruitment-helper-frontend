@@ -88,6 +88,20 @@ button {
   color: white;
 }
 
+.btn-danger {
+  background-color: var(--danger-color);
+  /* color: white; */
+}
+
+.btn-danger:hover {
+  background-color: darken(var(--danger-color), 10%);
+}
+
+.small-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
 .form-group {
   margin-bottom: 15px;
 }
@@ -297,6 +311,8 @@ button {
   width: 100%;
   max-width: 400px;
 }
+
+
 
 .login-form h2 {
   color: var(--text-color);
@@ -742,6 +758,15 @@ button {
   color: white;
 }
 
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: darken(var(--danger-color), 10%);
+}
+
 .notifications-card {
   margin-top: 20px;
 }
@@ -923,5 +948,63 @@ button {
   margin-top: 20px;
 }
 
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  max-width: 300px;
+  width: 100%;
+}
+
+.dialog-center {
+  text-align: center;
+}
+
+.dialog-actions {
+  display: flex;
+  align-content: stretch;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+
+.edit-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}

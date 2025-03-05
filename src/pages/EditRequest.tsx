@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -84,7 +84,7 @@ const EditRequest: React.FC = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="loading-container"><div className="loading-spinner"></div></div>;
     }
 
     if (error) {
@@ -96,58 +96,65 @@ const EditRequest: React.FC = () => {
     }
 
     return (
-        <div className="edit-request-container">
-            <ToastContainer />
-            <h1>Edit Request</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="requestTitle">Request Title</label>
-                    <input
-                        type="text"
-                        id="requestTitle"
-                        name="RequestTitle"
-                        className="form-control"
-                        value={request.RequestTitle}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="status">Status</label>
-                    <select
-                        id="status"
-                        name="Status"
-                        className="form-control"
-                        value={request.Status}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="InProgress">In Progress</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Rejected">Rejected</option>
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="feedback">Feedback</label>
-                    <textarea
-                        id="feedback"
-                        name="Feedback"
-                        className="form-control"
-                        value={request.Feedback || ''}
-                        onChange={handleChange}
-                    />
-                </div>
-                {/* Add more fields as necessary */}
-                <div className="form-actions">
-                    <button type="button" className="btn btn-outline" onClick={() => navigate('/resource-requests')}>
-                        Cancel
-                    </button>
-                    <button type="submit" className="btn btn-primary">
-                        Update Request
-                    </button>
-                </div>
-            </form>
+        <div>
+            <nav className="breadcrumb">
+                <Link to="/dashboard" className="breadcrumb-item">Dashboard</Link>
+                <Link to="/resource-requests" className="breadcrumb-item">Requests Placed</Link>
+                <span className="breadcrumb-item active">Edit Request</span>
+            </nav>
+            <div className="edit-request-container">
+                <ToastContainer />
+                <h1>Edit Request</h1>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="requestTitle">Request Title</label>
+                        <input
+                            type="text"
+                            id="requestTitle"
+                            name="RequestTitle"
+                            className="form-control"
+                            value={request.RequestTitle}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="status">Status</label>
+                        <select
+                            id="status"
+                            name="Status"
+                            className="form-control"
+                            value={request.Status}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="InProgress">In Progress</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="feedback">Feedback</label>
+                        <textarea
+                            id="feedback"
+                            name="Feedback"
+                            className="form-control"
+                            value={request.Feedback || ''}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    {/* Add more fields as necessary */}
+                    <div className="form-actions">
+                        <button type="button" className="btn btn-outline" onClick={() => navigate('/resource-requests')}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="btn btn-primary">
+                            Update Request
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

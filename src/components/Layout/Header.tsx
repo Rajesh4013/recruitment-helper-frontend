@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { User, Sun, Moon, Settings, LogOut } from 'lucide-react';
+import { User, Sun, Moon, LogOut } from 'lucide-react';
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
@@ -16,7 +17,9 @@ const Header: React.FC<HeaderProps> = ({
   onNavigate
 }) => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -25,6 +28,14 @@ const Header: React.FC<HeaderProps> = ({
   const handleLogout = () => {
     logout();
     onNavigate('/login');
+  };
+
+  const openLogoutDialog = () => {
+    setShowLogoutDialog(true);
+  };
+
+  const closeLogoutDialog = () => {
+    setShowLogoutDialog(false);
   };
 
   const handleProfileClick = () => {
@@ -53,13 +64,26 @@ const Header: React.FC<HeaderProps> = ({
               <User size={16} className="dropdown-icon" />
               <span>Profile</span>
             </div>
-            <div className="dropdown-item" onClick={handleLogout}>
+            <div className="dropdown-item" onClick={openLogoutDialog}>
               <LogOut size={16} className="dropdown-icon" />
               <span>Log Out</span>
             </div>
           </div>
         </div>
       </div>
+
+      {showLogoutDialog && (
+        <div className="dialog-overlay">
+          <div className="dialog dialog-center">
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to logout?</p>
+            <div className="dialog-actions">
+              <button className="btn btn-outline small-btn" onClick={closeLogoutDialog}>Cancel</button>
+              <button className="btn btn-danger small-btn" onClick={handleLogout}>Logout</button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
