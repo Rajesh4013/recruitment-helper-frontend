@@ -4,6 +4,13 @@ import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 
 const Dashboard: React.FC = () => {
+  const stats = {
+    totalRequests: 50,
+    pendingRequests: 10,
+    approvedRequests: 30,
+    rejectedRequests: 10,
+  };
+
   const [filter, setFilter] = useState('monthly');
   const [selectedMonth, setSelectedMonth] = useState('Jan');
   const [selectedYear, setSelectedYear] = useState('2023');
@@ -65,7 +72,7 @@ const Dashboard: React.FC = () => {
             <FileText className="stat-icon" size={24} />
           </div>
           <div className="stat-info">
-            <div className="stat-value">24</div>
+            <div className="stat-value">{stats.totalRequests}</div>
             <div className="stat-title">Total Requests</div>
           </div>
         </div>
@@ -95,7 +102,7 @@ const Dashboard: React.FC = () => {
             <Clock className="stat-icon" size={24} />
           </div>
           <div className="stat-info">
-            <div className="stat-value">4</div>
+            <div className="stat-value">{stats.pendingRequests}</div>
             <div className="stat-title">Pending positions</div>
           </div>
         </div>
@@ -169,24 +176,6 @@ const Dashboard: React.FC = () => {
           <div className="activity-item">
             <div className="activity-title">New candidate added</div>
             <div className="activity-meta">Product Manager • 2 days ago</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="card notifications-card">
-        <h2 className="card-title">Recent Notifications</h2>
-        <div className="notifications-list">
-          <div className="notification-item">
-            <div className="notification-title">System maintenance scheduled</div>
-            <div className="notification-meta">Tomorrow at 3:00 PM</div>
-          </div>
-          <div className="notification-item">
-            <div className="notification-title">New feature released</div>
-            <div className="notification-meta">Version 2.1.0 is now available</div>
-          </div>
-          <div className="notification-item">
-            <div className="notification-title">Policy update</div>
-            <div className="notification-meta">Please review the updated privacy policy</div>
           </div>
         </div>
       </div>

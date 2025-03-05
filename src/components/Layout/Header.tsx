@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { User, Sun, Moon, LogOut } from 'lucide-react';
+import { User, Sun, Moon, LogOut, Bell } from 'lucide-react';
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
@@ -20,6 +20,16 @@ const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
+
+  const notifications = [
+    { message: 'New request submitted', createdAt: new Date() },
+    { message: 'Candidate interview scheduled', createdAt: new Date() },
+    { message: 'Request approved', createdAt: new Date() },
+    { message: 'New candidate added', createdAt: new Date() }
+  ];
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -43,6 +53,27 @@ const Header: React.FC<HeaderProps> = ({
     setDropdownOpen(false);
   };
 
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+      notificationsRef.current && !notificationsRef.current.contains(event.target as Node)
+    ) {
+      setDropdownOpen(false);
+      setShowNotifications(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <header className={`header ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <div className="header-left">
@@ -52,10 +83,14 @@ const Header: React.FC<HeaderProps> = ({
         <div className="theme-toggle" onClick={toggleTheme}>
           {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         </div>
+        <div className="notification-icon" onClick={toggleNotifications} ref={notificationsRef}>
+          <Bell size={20} />
+          {notifications.length > 0 && <span className="notification-count">{notifications.length}</span>}
+        </div>
         <div className="user-info">
           <span className="user-name">{user?.FirstName} {user?.LastName}</span>
         </div>
-        <div className="profile-dropdown">
+        <div className="profile-dropdown" ref={dropdownRef}>
           <div className="dropdown-toggle" onClick={toggleDropdown}>
             <User size={24} />
           </div>
@@ -71,6 +106,23 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </div>
+
+      {showNotifications && (
+        <div className="notifications-dropdown">
+          <div className="notifications-header">
+            <h3>Notifications</h3>
+            {/* <button className="close-btn" onClick={toggleNotifications}>×</button> */}
+          </div>
+          <ul className="notifications-list">
+            {notifications.map((notification, index) => (
+              <li key={index} className="notification-item">
+                <p className="notification-message">{notification.message}</p>
+                <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {showLogoutDialog && (
         <div className="dialog-overlay">

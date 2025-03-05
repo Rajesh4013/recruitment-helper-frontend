@@ -1062,3 +1062,78 @@ button {
   justify-content: flex-end;
   margin-top: 10px;
 }
+
+.notification-icon {
+  position: relative;
+  cursor: pointer;
+  margin-right: 20px;
+  padding-top: 6px;
+}
+
+.notification-count {
+  position: absolute;
+  top: -3px;
+  right: -5px;
+  background-color: var(--danger-color);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.6rem;
+}
+
+.notifications-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 50px;
+  width: 300px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: var(--box-shadow);
+  z-index: 300;
+  overflow: hidden;
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.notifications-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.notifications-header .close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.notifications-list {
+  max-height: 300px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.notification-item {
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.notification-message {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.notification-time {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: #777;
+}
