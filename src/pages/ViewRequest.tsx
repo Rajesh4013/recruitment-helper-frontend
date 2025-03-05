@@ -132,7 +132,7 @@ const ViewRequest: React.FC = () => {
                 <Link to="/resource-requests" className="breadcrumb-item">Requests Placed</Link>
                 <span className="breadcrumb-item active">View Request</span>
             </nav>
-            
+
             <div className="view-request-container container">
                 <ToastContainer />
                 <h1 className="request-title">{request.RequestTitle}</h1>
@@ -283,21 +283,21 @@ const ViewRequest: React.FC = () => {
                                     <button type="button" className="btn btn-primary" onClick={handleSubmit}>
                                         Update Request
                                     </button>
-                                    <button type="button" className="btn btn-danger" onClick={openDeleteDialog}>
+                                    {/* <button type="button" className="btn btn-danger custom-danger-btn" onClick={openDeleteDialog}>
                                         Delete Request
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                         </div>
                     )}
                 </form>
                 <div className="edit-button-container">
-                <button type="button" className="btn btn-outline small-btn" onClick={handleEdit}>
-                    Edit Request
-                </button>
+                    <button type="button" className="btn btn-outline small-btn" onClick={handleEdit}>
+                        Edit Request
+                    </button>
+                </div>
             </div>
-            </div>
-            
+
             {showDeleteDialog && (
                 <div className="delete-dialog">
                     <div className="delete-dialog-content">
@@ -305,7 +305,7 @@ const ViewRequest: React.FC = () => {
                         <p>Are you sure you want to delete this request?</p>
                         <div className="delete-dialog-actions">
                             <button className="btn btn-secondary" onClick={closeDeleteDialog}>Cancel</button>
-                            <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+                            <button className="btn btn-danger custom-danger-btn" onClick={handleDelete}>Delete</button>
                         </div>
                     </div>
                 </div>

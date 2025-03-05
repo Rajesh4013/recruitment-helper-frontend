@@ -156,9 +156,9 @@ const ResourceRequests: React.FC = () => {
             <thead>
               <tr>
                 <th>Request Title</th>
+                <th>Requested By</th>
                 <th>Status</th>
                 <th>Created At</th>
-                <th>Updated At</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -166,13 +166,13 @@ const ResourceRequests: React.FC = () => {
               {filteredRequests.map(request => (
                 <tr key={request.ResourceRequestID} onClick={() => handleView(request.ResourceRequestID)}>
                   <td>{request.RequestTitle}</td>
+                  <td>{`${request?.Employee?.FirstName} ${request?.Employee?.LastName}`}</td>
                   <td>
                     <span className={`status-badge status-${request.Status.toLowerCase()}`}>
                       {request.Status}
                     </span>
                   </td>
                   <td>{new Date(request.CreatedAt).toLocaleString()}</td>
-                  <td>{new Date(request.UpdatedAt).toLocaleString()}</td>
                   <td className="actions-cell">
                     <button className="btn btn-outline" onClick={(e) => { e.stopPropagation(); handleView(request.ResourceRequestID); }}>
                       <Eye size={16} />

@@ -10,6 +10,7 @@ export const fetchResourceRequests = async (userId: number, token: string) => {
         throw new Error('Failed to fetch resource requests');
     }
     const data = await response.json();
+    // console.log(data);
     return data;
 };
 

@@ -67,8 +67,9 @@ export const viewRequestService = {
   },
 
   updateRequestDetails: async (requestId: string, token: string, updatedRequest: Partial<ResourceRequest>): Promise<ApiResponse<ResourceRequest>> => {
+    console.log(token);
     try {
-      const response = await fetch(`${VITE_API_URL}/resource-request/${requestId}`, {
+      const response = await fetch(`${VITE_API_URL}/resource-requests/${requestId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

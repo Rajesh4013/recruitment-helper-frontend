@@ -10,9 +10,9 @@ interface HeaderProps {
   onNavigate: (path: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ 
-  sidebarCollapsed, 
-  toggleTheme, 
+const Header: React.FC<HeaderProps> = ({
+  sidebarCollapsed,
+  toggleTheme,
   theme,
   onNavigate
 }) => {
@@ -53,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({
           {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         </div>
         <div className="user-info">
-          <span className="user-name">{user?.FirstName} { user?.LastName}</span>
+          <span className="user-name">{user?.FirstName} {user?.LastName}</span>
         </div>
         <div className="profile-dropdown">
           <div className="dropdown-toggle" onClick={toggleDropdown}>
@@ -79,7 +79,7 @@ const Header: React.FC<HeaderProps> = ({
             <p>Are you sure you want to logout?</p>
             <div className="dialog-actions">
               <button className="btn btn-outline small-btn" onClick={closeLogoutDialog}>Cancel</button>
-              <button className="btn btn-danger small-btn" onClick={handleLogout}>Logout</button>
+              <button className="btn btn-danger small-btn custom-danger-btn" onClick={handleLogout}>Logout</button>
             </div>
           </div>
         </div>
