@@ -88,14 +88,16 @@ button {
   color: white;
 }
 
-.btn-danger {
-  background-color: var(--danger-color);
-  color: white;
+/* .btn-danger {
+  background-color: white;
+  color: red;
+  border: 1px solid red;
 }
 
 .btn-danger:hover {
-  background-color: darken(var(--danger-color), 10%);
-}
+  background-color: red;
+  color: white;
+} */
 
 .small-btn {
   padding: 0.5rem 1rem;
@@ -813,12 +815,14 @@ button {
 }
 
 .btn-danger {
-  background-color: var(--danger-color);
-  color: white;
+  background-color: white;
+  color: red;
+  border: 1px solid red;
 }
 
 .btn-danger:hover {
-  background-color: darken(var(--danger-color), 10%);
+  background-color: red;
+  color: white;
 }
 
 .notifications-card {

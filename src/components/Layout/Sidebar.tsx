@@ -28,6 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   ]
 
   const isRecruiterManager = user?.Role === 'Recruiter' && recruiterManagerEmails.includes(user.Email);
+  const isAdmin = user?.Role === 'Admin';
 
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -91,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span className="menu-text">Admin Controls</span>
           </div>
         )}
-        {isRecruiterManager && (
+        {(isRecruiterManager || isAdmin) && (
           <div
             className="menu-item"
             onClick={() => onNavigate('/add-user')}

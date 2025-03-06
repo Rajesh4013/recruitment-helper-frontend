@@ -3,6 +3,8 @@ import { Plus, Eye, Edit, Trash } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { fetchResourceRequests, deleteResourceRequest } from '../services/resourceRequestService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './ResourceRequests.css'; // Import the CSS file
 
 interface ResourceRequest {
@@ -68,6 +70,10 @@ const ResourceRequests: React.FC = () => {
     setDeleteRequestId(null);
   };
 
+  const handleDisabledClick = (action: string, status: string) => {
+    toast.info(`Cannot ${action} request. Status is ${status}.`);
+  };
+
   useEffect(() => {
     const fetchRequests = async () => {
       if (user?.EmployeeID && token) {
@@ -76,6 +82,9 @@ const ResourceRequests: React.FC = () => {
           if (data.success) {
             setRequests(data.data);
             setFilteredRequests(data.data);
+            console.log('Resource requests:', data.data);
+            console.log('Employee first name:', data.data[0]?.Employee?.FirstName);
+            console.log('employee last name:', data.data[0]?.Employee?.LastName);
           } else {
             setError('Failed to fetch resource requests');
           }
@@ -113,6 +122,7 @@ const ResourceRequests: React.FC = () => {
 
   return (
     <>
+      <ToastContainer />
       <nav className="breadcrumb">
         <Link to="/dashboard" className="breadcrumb-item">Dashboard</Link>
         <span className="breadcrumb-item active">Requests Placed</span>
@@ -156,38 +166,39 @@ const ResourceRequests: React.FC = () => {
             <thead>
               <tr>
                 <th>Request Title</th>
-                <th>Requested By</th>
+                {(user?.Role !== 'TeamLead') && (
+                  <th>Requested By</th>
+                )}
                 <th>Status</th>
                 <th>Created At</th>
-                <th>Actions</th>
+                {(user?.Role !== 'Recruiter' && user?.Role !== 'Admin') && (
+                  <th>Actions</th>
+                )}
               </tr>
             </thead>
             <tbody>
               {filteredRequests.map(request => (
                 <tr key={request.ResourceRequestID} onClick={() => handleView(request.ResourceRequestID)}>
                   <td>{request.RequestTitle}</td>
-                  <td>{`${request?.Employee?.FirstName} ${request?.Employee?.LastName}`}</td>
+                  {(user?.Role !== 'TeamLead') && (
+                    <td>{request.EmployeeID === parseInt(user?.EmployeeID || '') ? 'You' : `${request?.Employee?.FirstName} ${request?.Employee?.LastName}`}</td>
+                  )}
                   <td>
                     <span className={`status-badge status-${request.Status.toLowerCase()}`}>
                       {request.Status}
                     </span>
                   </td>
                   <td>{new Date(request.CreatedAt).toLocaleString()}</td>
+                  {(user?.Role !== 'Recruiter' && user?.Role !== 'Admin') && (
                   <td className="actions-cell">
-                    <button className="btn btn-outline" onClick={(e) => { e.stopPropagation(); handleView(request.ResourceRequestID); }}>
-                      <Eye size={16} />
+                    <button className="btn btn-outline" onClick={(e) => { e.stopPropagation(); request.Status === 'Accepted' || request.Status === 'Rejected' ? handleDisabledClick('edit', request.Status) : handleEdit(request); }}>
+                      <Edit size={16} />
                     </button>
-                    {user?.Role !== 'Recruiter' && (
-                      <>
-                        <button className="btn btn-outline" onClick={(e) => { e.stopPropagation(); handleEdit(request); }}>
-                          <Edit size={16} />
-                        </button>
-                        <button className="btn btn-outline" onClick={(e) => { e.stopPropagation(); openDeleteDialog(request.ResourceRequestID); }}>
-                          <Trash size={16} />
-                        </button>
-                      </>
-                    )}
+                    <button className="btn btn-outline" onClick={(e) => { e.stopPropagation(); request.Status === 'Accepted' || request.Status === 'Rejected' ? handleDisabledClick('delete', request.Status) : openDeleteDialog(request.ResourceRequestID); }}>
+                      <Trash size={16} />
+                    </button>
                   </td>
+                  )}
                 </tr>
               ))}
             </tbody>

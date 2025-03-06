@@ -1,9 +1,11 @@
+
+
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const userService = {
-  async addUser(token: string, userData: any) {
+
+export const addUser= async (token: string, userData: any) =>{
     try {
-      const response = await fetch(`${API_URL}/users`, {
+      const response = await fetch(`${API_URL}/employees/add-a-user`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -23,5 +25,5 @@ export const userService = {
       console.error('Error adding user:', error);
       throw error;
     }
-  }
 };
+

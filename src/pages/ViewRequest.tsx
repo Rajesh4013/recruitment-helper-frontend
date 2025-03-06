@@ -36,6 +36,8 @@ const ViewRequest: React.FC = () => {
                         setRequest(data.data);
                         setStatus(data.data.Status);
                         setFeedback(data.data.Feedback || '');
+                        toast.info(`Request is ${data.data.Status}`);
+                        console.log('request:', data.data);
                     } else {
                         setError('Failed to fetch resource request');
                     }
@@ -102,6 +104,10 @@ const ViewRequest: React.FC = () => {
         } else {
             navigate(`/resource-requests/edit/${request.ResourceRequestID}`);
         }
+    };
+
+    const handleDisabledClick = (action: string) => {
+        toast.info(`Cannot ${action} request. Status is ${request?.Status}.`);
     };
 
     if (loading) {
@@ -250,7 +256,7 @@ const ViewRequest: React.FC = () => {
                         </div>
                     </div>
 
-                    {user?.Role === 'Recruiter' && (
+                    {user?.Role == 'Recruiter' && request?.Employee.Login.Role !== user?.Role && (
                         <div className="card">
                             <div className="card-body">
                                 <div className="form-group small-input">
@@ -262,6 +268,7 @@ const ViewRequest: React.FC = () => {
                                         value={status}
                                         onChange={handleStatusChange}
                                         required
+                                        disabled={request.Status === 'Accepted' || request.Status === 'Rejected'}
                                     >
                                         <option value="InProgress">In Progress</option>
                                         <option value="Accepted">Accepted</option>
@@ -277,25 +284,38 @@ const ViewRequest: React.FC = () => {
                                         value={feedback}
                                         onChange={handleFeedbackChange}
                                         required
+                                        disabled={request.Status === 'Accepted' || request.Status === 'Rejected'}
                                     />
                                 </div>
                                 <div className="form-actions">
-                                    <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+                                    <button type="button" className="btn btn-primary" onClick={handleSubmit} disabled={request.Status === 'Accepted' || request.Status === 'Rejected'}>
                                         Update Request
                                     </button>
-                                    {/* <button type="button" className="btn btn-danger custom-danger-btn" onClick={openDeleteDialog}>
-                                        Delete Request
-                                    </button> */}
                                 </div>
                             </div>
                         </div>
                     )}
                 </form>
+
                 <div className="edit-button-container">
-                    <button type="button" className="btn btn-outline small-btn" onClick={handleEdit}>
-                        Edit Request
-                    </button>
+                    {(user?.Role !== 'Recruiter' && user?.Role !== 'Admin') || request?.EmployeeID === parseInt(user?.EmployeeID || '') ? (
+                        <button
+                            type="button"
+                            className="btn btn-outline small-btn"
+                            onClick={(e) => {
+                                if (request.Status === 'Accepted' || request.Status === 'Rejected') {
+                                    e.preventDefault(); // Prevents unintended behavior
+                                    handleDisabledClick('edit');
+                                } else {
+                                    handleEdit();
+                                }
+                            }}
+                        >
+                            Edit Request
+                        </button>
+                    ) : null}
                 </div>
+
             </div>
 
             {showDeleteDialog && (
@@ -305,7 +325,9 @@ const ViewRequest: React.FC = () => {
                         <p>Are you sure you want to delete this request?</p>
                         <div className="delete-dialog-actions">
                             <button className="btn btn-secondary" onClick={closeDeleteDialog}>Cancel</button>
-                            <button className="btn btn-danger custom-danger-btn" onClick={handleDelete}>Delete</button>
+                            <button className="btn btn-danger custom-danger-btn" onClick={handleDelete} disabled={request.Status === 'Accepted' || request.Status === 'Rejected'}>
+                                Delete
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -1,19 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { profileService, Profile as ProfileType } from '../services/profileService';
 import './Profile.css'; // Import the CSS file
 
-const Profile: React.FC = () => {
-  const { user } = useAuth();
+const UserProfile: React.FC = () => {
+  const { user, token } = useAuth();
+  const [profile, setProfile] = useState<ProfileType | null>(null);
   const [activeTab, setActiveTab] = useState('personal');
   const [formData, setFormData] = useState({
-    name: user?.FirstName + ' ' + user?.LastName || '',
-    email: user?.Email || '',
-    phone: '(555) 123-4567',
-    department: 'HR',
-    position: user?.Role,
-    bio: 'Experienced with 5+ years.'
+    id: '',
+    name: '',
+    email: '',
+    phone: '',
+    department: '',
+    position: '',
+    designation: '',
+    manager: '',
+    mobileNumber: '',
+    address: '',
+    yearsOfExperience: 0,
+    joiningDate: ''
   });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user?.EmployeeID && token) {
+        try {
+          const response = await profileService.getProfile(token, user.EmployeeID);
+          if (response.success) {
+            setProfile(response.data);
+            setFormData({
+              id: response.data.EmployeeID,
+              name: `${response.data.FirstName} ${response.data.LastName}`,
+              email: response.data.Email,
+              phone: response.data.MobileNumber,
+              department: response.data.Department,
+              position: response.data.Role,
+              designation: response.data.Designation,
+              manager: response.data.Manager.ManagerName,
+              mobileNumber: response.data.MobileNumber,
+              address: response.data.Address,
+              yearsOfExperience: response.data.YearsOfExperience,
+              joiningDate: response.data.JoiningDate
+            });
+            console.log('Profile data:', response.data);
+          }
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+        }
+      }
+    };
+
+    fetchProfile();
+  }, [user?.EmployeeID, token]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -31,21 +71,24 @@ const Profile: React.FC = () => {
     alert('Profile updated successfully!');
   };
 
+  if (!profile) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="profile-container">
       <nav className="breadcrumb">
         <Link to="/dashboard" className="breadcrumb-item">Dashboard</Link>
         <span className="breadcrumb-item active">Profile</span>
       </nav>
-      <h1 className="page-title">Profile</h1>
       <div className="profile-header">
         <div className="profile-avatar">
-          {user?.FirstName?.charAt(0) || 'U'}
-          {user?.LastName?.charAt(0) || 'S'}
+          {profile.FirstName.charAt(0)}
+          {profile.LastName.charAt(0)}
         </div>
         <div className="profile-info">
-          <h2>{user?.FirstName} {user?.LastName}</h2>
-          <p>{user?.Role}</p>
+          <h2>{profile.FirstName} {profile.LastName}</h2>
+          <p>{profile.Role}</p>
         </div>
       </div>
       
@@ -70,6 +113,20 @@ const Profile: React.FC = () => {
             <div className="form-row">
               <div className="form-col">
                 <div className="form-group">
+                  <label htmlFor="id">Employee ID</label>
+                  <input
+                    type="text"
+                    id="id"
+                    name="id"
+                    className="form-control"
+                    value={formData.id}
+                    onChange={handleChange}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="form-col">
+                <div className="form-group">
                   <label htmlFor="name">Full Name</label>
                   <input
                     type="text"
@@ -78,9 +135,13 @@ const Profile: React.FC = () => {
                     className="form-control"
                     value={formData.name}
                     onChange={handleChange}
+                    readOnly
                   />
                 </div>
               </div>
+            </div>
+            
+            <div className="form-row">
               <div className="form-col">
                 <div className="form-group">
                   <label htmlFor="email">Email</label>
@@ -91,13 +152,10 @@ const Profile: React.FC = () => {
                     className="form-control"
                     value={formData.email}
                     onChange={handleChange}
-                    disabled
+                    readOnly
                   />
                 </div>
               </div>
-            </div>
-            
-            <div className="form-row">
               <div className="form-col">
                 <div className="form-group">
                   <label htmlFor="phone">Phone</label>
@@ -106,11 +164,15 @@ const Profile: React.FC = () => {
                     id="phone"
                     name="phone"
                     className="form-control"
-                    value={formData.phone}
+                    value={formData.mobileNumber}
                     onChange={handleChange}
+                    readOnly
                   />
                 </div>
               </div>
+            </div>
+            
+            <div className="form-row">
               <div className="form-col">
                 <div className="form-group">
                   <label htmlFor="department">Department</label>
@@ -121,40 +183,119 @@ const Profile: React.FC = () => {
                     className="form-control"
                     value={formData.department}
                     onChange={handleChange}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="form-col">
+                <div className="form-group">
+                  <label htmlFor="position">Position</label>
+                  <input
+                    type="text"
+                    id="position"
+                    name="position"
+                    className="form-control"
+                    value={formData.position}
+                    onChange={handleChange}
+                    readOnly
                   />
                 </div>
               </div>
             </div>
             
-            <div className="form-group">
-              <label htmlFor="position">Position</label>
-              <input
-                type="text"
-                id="position"
-                name="position"
-                className="form-control"
-                value={formData.position}
-                onChange={handleChange}
-              />
+            <div className="form-row">
+              <div className="form-col">
+                <div className="form-group">
+                  <label htmlFor="designation">Designation</label>
+                  <input
+                    type="text"
+                    id="designation"
+                    name="designation"
+                    className="form-control"
+                    value={formData.designation}
+                    onChange={handleChange}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="form-col">
+                <div className="form-group">
+                  <label htmlFor="manager">Manager</label>
+                  <input
+                    type="text"
+                    id="manager"
+                    name="manager"
+                    className="form-control"
+                    value={formData.manager}
+                    onChange={handleChange}
+                    readOnly
+                  />
+                </div>
+              </div>
             </div>
             
-            <div className="form-group">
-              <label htmlFor="bio">Bio</label>
-              <textarea
-                id="bio"
-                name="bio"
-                className="form-control"
-                rows={4}
-                value={formData.bio}
-                onChange={handleChange}
-              ></textarea>
+            <div className="form-row">
+              <div className="form-col">
+                <div className="form-group">
+                  <label htmlFor="mobileNumber">Mobile Number</label>
+                  <input
+                    type="text"
+                    id="mobileNumber"
+                    name="mobileNumber"
+                    className="form-control"
+                    value={formData.mobileNumber}
+                    onChange={handleChange}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="form-col">
+                <div className="form-group">
+                  <label htmlFor="address">Address</label>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    className="form-control"
+                    value={formData.address}
+                    onChange={handleChange}
+                    readOnly
+                  />
+                </div>
+              </div>
             </div>
             
-            <div className="form-actions">
-              <button type="submit" className="btn btn-primary">
-                Save Changes
-              </button>
+            <div className="form-row">
+              <div className="form-col">
+                <div className="form-group">
+                  <label htmlFor="yearsOfExperience">Years of Experience</label>
+                  <input
+                    type="number"
+                    id="yearsOfExperience"
+                    name="yearsOfExperience"
+                    className="form-control"
+                    value={formData.yearsOfExperience}
+                    onChange={handleChange}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="form-col">
+                <div className="form-group">
+                  <label htmlFor="joiningDate">Joining Date</label>
+                  <input
+                    type="date"
+                    id="joiningDate"
+                    name="joiningDate"
+                    className="form-control"
+                    value={formData.joiningDate}
+                    onChange={handleChange}
+                    readOnly
+                  />
+                </div>
+              </div>
             </div>
+            
           </form>
         </div>
       )}
@@ -212,4 +353,4 @@ const Profile: React.FC = () => {
   );
 };
 
-export default Profile;
+export default UserProfile;

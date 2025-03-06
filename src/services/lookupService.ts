@@ -1,3 +1,5 @@
+// import axios from 'axios';
+
 interface LookupItem {
   // Job Types
   JobTypeID?: number;
@@ -36,6 +38,7 @@ interface LookupResponse {
 const API_URL = `${import.meta.env.VITE_API_URL}/lookups`;
 
 export const lookupService = {
+ 
 
   getBudgets: async (token: string): Promise<LookupResponse> => {
     const response = await fetch(`${API_URL}/budget-ranges`, {
@@ -169,6 +172,22 @@ export const lookupService = {
     }
     return await response.json();
   },
+
+  // async getRoles(token: string) {
+  //   try {
+  //     const response = await axios.get(`${API_URL}/roles`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`
+  //       }
+  //     });
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error fetching roles:', error);
+  //     throw error;
+  //   }
+  // },
+
+  
 
   getLookups: async (token: string) => {
     const response = await fetch(`${API_URL}`, {

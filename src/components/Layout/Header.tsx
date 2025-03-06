@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { User, Sun, Moon, LogOut, Bell } from 'lucide-react';
+import './Header.css'; // Import the CSS file
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
@@ -77,7 +78,9 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className={`header ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <div className="header-left">
-        <h2>Recruitment Helper</h2>
+        <Link to="/dashboard" className="logo">
+          RecHelper
+        </Link>
       </div>
       <div className="header-right">
         <div className="theme-toggle" onClick={toggleTheme}>
@@ -87,13 +90,19 @@ const Header: React.FC<HeaderProps> = ({
           <Bell size={20} />
           {notifications.length > 0 && <span className="notification-count">{notifications.length}</span>}
         </div>
-        <div className="user-info">
-          <span className="user-name">{user?.FirstName} {user?.LastName}</span>
-        </div>
+        {user && (
+          <>
+            {/* <div className="profile-info">
+              <span className="profile-name">{user.FirstName} {user.LastName}</span> */}
+              {/* <span className="profile-role">{user.Role}</span> */}
+            {/* </div> */}
+            <div className="profile-avatar small-avatar" onClick={toggleDropdown}>
+              {user.FirstName.charAt(0)}
+              {user.LastName.charAt(0)}
+            </div>
+          </>
+        )}
         <div className="profile-dropdown" ref={dropdownRef}>
-          <div className="dropdown-toggle" onClick={toggleDropdown}>
-            <User size={24} />
-          </div>
           <div className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`}>
             <div className="dropdown-item" onClick={handleProfileClick}>
               <User size={16} className="dropdown-icon" />
@@ -111,7 +120,6 @@ const Header: React.FC<HeaderProps> = ({
         <div className="notifications-dropdown">
           <div className="notifications-header">
             <h3>Notifications</h3>
-            {/* <button className="close-btn" onClick={toggleNotifications}>×</button> */}
           </div>
           <ul className="notifications-list">
             {notifications.map((notification, index) => (

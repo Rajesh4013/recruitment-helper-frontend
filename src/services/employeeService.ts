@@ -99,7 +99,35 @@ export const employeeService = {
     }
 
     return response.json();
-  }
+  }, 
+
+  async getEmployeeIds(token: string) {
+    try {
+      const response = await fetch(`${VITE_API_URL}/employees?searchBy=Manager&limit=40`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching employee:', error);
+      throw error;
+    }
+  },
+
+  async getDepartments(token: string) {
+    try {
+      const response = await fetch(`${VITE_API_URL}/departments`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+      throw error;
+    }
+  },
 };
 
 export type { Employee, EmployeeDetails }; 

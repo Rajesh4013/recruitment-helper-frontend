@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../context/AuthContext';
-import { userService } from '../services/userService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { addUser } from '../services/userService';
+import { lookupService, LookupItem } from '../services/lookupService';
+import { employeeService, Employee } from '../services/employeeService';
 
 const AddUser: React.FC = () => {
   const navigate = useNavigate();
@@ -23,10 +25,37 @@ const AddUser: React.FC = () => {
     MobileNumber: '',
     Address: '',
     Gender: '',
-    YearsOfExperience: '',
-    ReportingManager: '',
+    YearsOfExperience: 0,
     JoiningDate: ''
   });
+
+  const [lookups, setLookups] = useState({
+    departments: [] as LookupItem[],
+    managers: [] as Employee[]
+  });
+
+  useEffect(() => {
+    const fetchLookups = async () => {
+      try {
+        const [departments, managers] = await Promise.all([
+          employeeService.getDepartments(token!),
+          employeeService.getEmployeeIds(token!)
+        ]);
+
+        console.log('Fetched departments:', departments.data);
+
+        setLookups({
+          departments: departments.data,
+          managers: managers.data
+        });
+      } catch (error) {
+        console.error('Error fetching lookups:', error);
+        toast.error('Failed to fetch lookup data');
+      }
+    };
+
+    fetchLookups();
+  }, [token]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type, checked, files } = e.target;
@@ -39,7 +68,7 @@ const AddUser: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await userService.addUser(token!, formData);
+      const response = await addUser(token!, formData);
       if (response.success) {
         toast.success('User added successfully', {
           onClose: () => navigate('/admin-controls')
@@ -103,6 +132,8 @@ const AddUser: React.FC = () => {
                   required
                 />
               </div>
+            </div>
+            <div className="form-col">
               <div className="form-group">
                 <label htmlFor="FirstName">First Name</label>
                 <input
@@ -116,6 +147,8 @@ const AddUser: React.FC = () => {
                   required
                 />
               </div>
+            </div>
+            <div className="form-col">
               <div className="form-group">
                 <label htmlFor="LastName">Last Name</label>
                 <input
@@ -130,6 +163,8 @@ const AddUser: React.FC = () => {
                 />
               </div>
             </div>
+          </div>
+          <div className="form-row">
             <div className="form-col">
               <div className="form-group">
                 <label htmlFor="Designation">Designation</label>
@@ -144,45 +179,8 @@ const AddUser: React.FC = () => {
                   required
                 />
               </div>
-              <div className="form-group">
-                <label htmlFor="DepartmentID">Department ID</label>
-                <input
-                  type="text"
-                  id="DepartmentID"
-                  name="DepartmentID"
-                  className="form-control"
-                  value={formData.DepartmentID}
-                  onChange={handleChange}
-                  placeholder="Enter Department ID"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="ManagerEmployeeID">Manager Employee ID</label>
-                <input
-                  type="text"
-                  id="ManagerEmployeeID"
-                  name="ManagerEmployeeID"
-                  className="form-control"
-                  value={formData.ManagerEmployeeID}
-                  onChange={handleChange}
-                  placeholder="Enter Manager Employee ID"
-                  required
-                />
-              </div>
             </div>
             <div className="form-col">
-              <div className="form-group">
-                <label htmlFor="IsAdmin">Is Admin</label>
-                <input
-                  type="checkbox"
-                  id="IsAdmin"
-                  name="IsAdmin"
-                  className="form-control-checkbox"
-                  checked={formData.IsAdmin}
-                  onChange={handleChange}
-                />
-              </div>
               <div className="form-group">
                 <label htmlFor="Email">Email</label>
                 <input
@@ -196,6 +194,8 @@ const AddUser: React.FC = () => {
                   required
                 />
               </div>
+            </div>
+            <div className="form-col">
               <div className="form-group">
                 <label htmlFor="Password">Password</label>
                 <input
@@ -210,46 +210,68 @@ const AddUser: React.FC = () => {
                 />
               </div>
             </div>
+          </div>
+          <div className="form-row">
+            <div className="form-col">
+              <div className="form-group">
+                <label htmlFor="DepartmentID">Department</label>
+                <select
+                  id="DepartmentID"
+                  name="DepartmentID"
+                  className="form-control"
+                  value={formData.DepartmentID}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Department</option>
+                  {lookups.departments.map(department => (
+                    <option key={department.DepartmentID} value={department.DepartmentID}>
+                      {department.DepartmentName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <div className="form-col">
               <div className="form-group">
                 <label htmlFor="Role">Role</label>
-                <input
-                  type="text"
+                <select
                   id="Role"
                   name="Role"
                   className="form-control"
                   value={formData.Role}
                   onChange={handleChange}
-                  placeholder="Enter Role"
                   required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="MobileNumber">Mobile Number</label>
-                <input
-                  type="text"
-                  id="MobileNumber"
-                  name="MobileNumber"
-                  className="form-control"
-                  value={formData.MobileNumber}
-                  onChange={handleChange}
-                  placeholder="Enter Mobile Number"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="Address">Address</label>
-                <textarea
-                  id="Address"
-                  name="Address"
-                  className="form-control"
-                  value={formData.Address}
-                  onChange={handleChange}
-                  placeholder="Enter Address"
-                  required
-                />
+                >
+                  <option value="">Select Role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Manager">Manager</option>
+                  <option value="TeamLead">Team Lead</option>
+                </select>
               </div>
             </div>
+            <div className="form-col">
+              <div className="form-group">
+                <label htmlFor="ManagerEmployeeID">Manager</label>
+                <select
+                  id="ManagerEmployeeID"
+                  name="ManagerEmployeeID"
+                  className="form-control"
+                  value={formData.ManagerEmployeeID}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Manager</option>
+                  {lookups.managers.map(manager => (
+                    <option key={manager.EmployeeID} value={manager.EmployeeID}>
+                      {manager.FirstName} {manager.LastName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="form-row">
             <div className="form-col">
               <div className="form-group">
                 <label htmlFor="Gender">Gender</label>
@@ -267,6 +289,8 @@ const AddUser: React.FC = () => {
                   <option value="Other">Other</option>
                 </select>
               </div>
+            </div>
+            <div className="form-col">
               <div className="form-group">
                 <label htmlFor="YearsOfExperience">Years of Experience</label>
                 <input
@@ -280,19 +304,8 @@ const AddUser: React.FC = () => {
                   required
                 />
               </div>
-              <div className="form-group">
-                <label htmlFor="ReportingManager">Reporting Manager</label>
-                <input
-                  type="text"
-                  id="ReportingManager"
-                  name="ReportingManager"
-                  className="form-control"
-                  value={formData.ReportingManager}
-                  onChange={handleChange}
-                  placeholder="Enter Reporting Manager"
-                  required
-                />
-              </div>
+            </div>
+            <div className="form-col">
               <div className="form-group">
                 <label htmlFor="JoiningDate">Joining Date</label>
                 <input
@@ -302,6 +315,54 @@ const AddUser: React.FC = () => {
                   className="form-control"
                   value={formData.JoiningDate}
                   onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-col">
+              <div className="form-group">
+                <label htmlFor="MobileNumber">Mobile Number</label>
+                <input
+                  type="text"
+                  id="MobileNumber"
+                  name="MobileNumber"
+                  className="form-control"
+                  value={formData.MobileNumber}
+                  onChange={handleChange}
+                  placeholder="Enter Mobile Number"
+                  pattern="^\+?\d{10,15}$"
+                  title="Please enter a valid mobile number with 10 to 15 digits"
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-col">
+              <div className="form-group">
+                <label htmlFor="IsAdmin">Is Admin</label>
+                <input
+                  type="checkbox"
+                  id="IsAdmin"
+                  name="IsAdmin"
+                  className="form-control-checkbox"
+                  checked={formData.IsAdmin}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-col" style={{ flex: '1 1 100%' }}>
+              <div className="form-group">
+                <label htmlFor="Address">Address</label>
+                <textarea
+                  id="Address"
+                  name="Address"
+                  className="form-control"
+                  value={formData.Address}
+                  onChange={handleChange}
+                  placeholder="Enter Address"
                   required
                 />
               </div>
