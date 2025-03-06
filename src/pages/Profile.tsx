@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { profileService, Profile as ProfileType } from '../services/profileService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Profile.css'; // Import the CSS file
 
 const UserProfile: React.FC = () => {
@@ -21,6 +23,11 @@ const UserProfile: React.FC = () => {
     address: '',
     yearsOfExperience: 0,
     joiningDate: ''
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
   });
 
   useEffect(() => {
@@ -63,6 +70,14 @@ const UserProfile: React.FC = () => {
     }));
   };
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, you would submit the form data to an API
@@ -71,12 +86,32 @@ const UserProfile: React.FC = () => {
     alert('Profile updated successfully!');
   };
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error('New password and confirm password do not match');
+      return;
+    }
+    try {
+      const response = await profileService.changePassword(token!, user!.EmployeeID, passwordData.currentPassword, passwordData.newPassword);
+      if (response.success) {
+        toast.success('Password changed successfully!');
+      } else {
+        toast.error('Failed to change password');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+      toast.error('Error changing password');
+    }
+  };
+
   if (!profile) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="profile-container">
+      <ToastContainer />
       <nav className="breadcrumb">
         <Link to="/dashboard" className="breadcrumb-item">Dashboard</Link>
         <span className="breadcrumb-item active">Profile</span>
@@ -302,51 +337,57 @@ const UserProfile: React.FC = () => {
       
       {activeTab === 'account' && (
         <div className="card">
-          <div className="form-group">
-            <label htmlFor="current-password">Current Password</label>
-            <input
-              type="password"
-              id="current-password"
-              className="form-control"
-            />
-          </div>
-          
-          <div className="form-row">
-            <div className="form-col">
-              <div className="form-group">
-                <label htmlFor="new-password">New Password</label>
-                <input
-                  type="password"
-                  id="new-password"
-                  className="form-control"
-                />
+          <form onSubmit={handleChangePassword}>
+            <div className="form-group">
+              <label htmlFor="currentPassword">Current Password</label>
+              <input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                className="form-control"
+                value={passwordData.currentPassword}
+                onChange={handlePasswordChange}
+                required
+              />
+            </div>
+            
+            <div className="form-row">
+              <div className="form-col">
+                <div className="form-group">
+                  <label htmlFor="newPassword">New Password</label>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    name="newPassword"
+                    className="form-control"
+                    value={passwordData.newPassword}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="form-col">
+                <div className="form-group">
+                  <label htmlFor="confirmPassword">Confirm Password</label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    className="form-control"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                </div>
               </div>
             </div>
-            <div className="form-col">
-              <div className="form-group">
-                <label htmlFor="confirm-password">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirm-password"
-                  className="form-control"
-                />
-              </div>
+            
+            <div className="form-actions">
+              <button type="submit" className="btn btn-primary">
+                Update Password
+              </button>
             </div>
-          </div>
-          
-          <div className="form-actions">
-            <button type="button" className="btn btn-primary">
-              Update Password
-            </button>
-          </div>
-          
-          <hr style={{ margin: '30px 0', borderColor: 'var(--border-color)' }} />
-          
-          <h3 className="mb-3">Danger Zone</h3>
-          <p className="mb-3">Once you delete your account, there is no going back. Please be certain.</p>
-          <button type="button" className="btn" style={{ backgroundColor: 'var(--danger-color)', color: 'white' }}>
-            Delete Account
-          </button>
+          </form>
         </div>
       )}
     </div>

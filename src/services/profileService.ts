@@ -39,6 +39,26 @@ export const profileService = {
     }
 
     return response.json();
+  },
+
+  changePassword: async (token: string, employeeId: string, currentPassword: string, newPassword: string): Promise<ProfileResponse> => {
+    const response = await fetch(`${API_URL}/employees/profile/${employeeId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        CurrentPassword: currentPassword,
+        NewPassword: newPassword
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to change password');
+    }
+
+    return response.json();
   }
 };
 
