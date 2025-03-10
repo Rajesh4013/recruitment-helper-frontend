@@ -23,6 +23,7 @@ const ResourceRequests: React.FC = () => {
   const { token, user } = useAuth();
   const [requests, setRequests] = useState<ResourceRequest[]>([]);
   const [filteredRequests, setFilteredRequests] = useState<ResourceRequest[]>([]);
+  console.log(filteredRequests);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');

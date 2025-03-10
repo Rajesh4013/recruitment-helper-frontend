@@ -601,13 +601,15 @@ const RequestForm: React.FC = () => {
                 </div>
               </div>
               <div className="form-col">
-                <InterviewSlotInput
-                  id="level1PanelInterviewSlots"
-                  label="Interview Slots"
-                  value={formData.level1PanelInterviewSlots}
-                  slots={lookups.interviewSlots}
-                  onChange={(slots) => handleSlotsChange('level1', slots)}
-                />
+                <div className="form-group">
+                  <InterviewSlotInput
+                    id="level1PanelInterviewSlots"
+                    label="Interview Slots"
+                    value={formData.level1PanelInterviewSlots}
+                    slots={lookups.interviewSlots}
+                    onChange={(slots) => handleSlotsChange('level1', slots)}
+                  />
+                </div>
               </div>
             </div>
             <div className="form-row two-cols">
@@ -645,6 +647,7 @@ const RequestForm: React.FC = () => {
                 </div>
               </div>
               <div className="form-col">
+              <div className="form-group">
                 <InterviewSlotInput
                   id="level2PanelInterviewSlots"
                   label="Interview Slots"
@@ -652,6 +655,7 @@ const RequestForm: React.FC = () => {
                   slots={lookups.interviewSlots}
                   onChange={(slots) => handleSlotsChange('level2', slots)}
                 />
+              </div>
               </div>
             </div>
           </div>

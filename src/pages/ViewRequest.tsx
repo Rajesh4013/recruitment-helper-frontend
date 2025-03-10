@@ -40,7 +40,7 @@ const ViewRequest: React.FC = () => {
                         setStatus(data.data.Status);
                         setFeedback(data.data.Feedback || '');
                         toast.info(`Request is ${data.data.Status}`);
-                        console.log('request:', data.data);
+                        console.log('request:', data.data.updateTracker[0].Status);
                     } else {
                         setError('Failed to fetch resource request');
                     }
@@ -110,7 +110,13 @@ const ViewRequest: React.FC = () => {
     };
 
     const handleDisabledClick = (action: string) => {
-        toast.info(`Cannot ${action} request. Status is ${request?.Status}.`);
+        if (user?.Role === 'Manager') {
+            toast.info(`Cannot ${action}. Status is ${request?.Status}.`);
+        } else if (user?.Role === 'TeamLead') {
+            toast.info(`Cannot ${action}. Your request is ${request?.updateTracker[0].Status} by the manager`);
+        } else {
+            toast.info(`Cannot ${action}. Status is ${request?.Status}.`);
+        }
     };
 
     const handleGenerateJD = () => {
@@ -335,13 +341,14 @@ Available slots: ${parseSlots(request?.updateTracker[0].Level2PanelInterviewSlot
                                 type="button"
                                 className="btn btn-outline small-btn"
                                 onClick={(e) => {
-                                    if (request.Status === 'Accepted' || request.Status === 'Rejected') {
+                                    if (request.Status === 'Accepted' || request.Status === 'Rejected' || updateTracker.Status === 'Accepted') {
                                         e.preventDefault(); // Prevents unintended behavior
                                         handleDisabledClick('edit');
                                     } else {
                                         handleEdit();
                                     }
                                 }}
+                                // disabled={updateTracker.Status === 'Accepted'}
                             >
                                 Edit Request
                             </button>
