@@ -96,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({
               <span className="profile-name">{user.FirstName} {user.LastName}</span> */}
               {/* <span className="profile-role">{user.Role}</span> */}
             {/* </div> */}
-            <div className="profile-avatar small-avatar" onClick={toggleDropdown}>
+            <div className="header-profile-avatar small-avatar" onClick={toggleDropdown}>
               {user.FirstName.charAt(0)}
               {user.LastName.charAt(0)}
             </div>

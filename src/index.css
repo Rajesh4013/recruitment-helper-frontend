@@ -929,15 +929,15 @@ button {
 }
 
 .avatar-placeholder {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background-color: #e9ecef;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #777;
-  font-size: 14px;
+  font-size: 12px;
   text-align: center;
   padding: 10px;
   position: relative;
@@ -994,10 +994,13 @@ button {
 }
 
 .form-control-checkbox {
-  width: auto;
-  height: auto;
+  width: 25px;
+  height: 25px;
   margin-top: 0.5rem;
+  margin-right: 400px;
 }
+
+
 
 .form-actions {
   display: flex;
@@ -1049,6 +1052,24 @@ button {
   max-width: 300px;
   width: 100%;
 }
+
+.large-dialog {
+  max-width: 1200px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.jd-content {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+
+.custom-font {
+  font-family: "Times New Roman", Times, serif;
+}
+
 
 .dialog-center {
   text-align: center;
@@ -1140,4 +1161,14 @@ button {
   margin-top: 5px;
   font-size: 0.75rem;
   color: #777;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-icon {
+  cursor: pointer;
 }

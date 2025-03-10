@@ -7,7 +7,8 @@ import {
   ChevronLeft,
   Briefcase,
   UserPlus,
-  ShieldAlert
+  ShieldAlert,
+  FileSearch
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -79,6 +80,18 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <span className="menu-text">Raise A Request</span>
         </div>
+        )}
+        {user?.Role === 'Recruiter' && (
+          <div 
+            className="menu-item"
+            onClick={() => onNavigate('/resume-extractor')}
+            title={collapsed ? "Resume Extractor" : ""}
+          >
+            <div className="menu-icon">
+              <FileSearch size={20} />
+            </div>
+            <span className="menu-text">Resume Extractor</span>
+          </div>
         )}
         {(user?.Role === 'Recruiter' || user?.Role === 'Admin') && (
           <div

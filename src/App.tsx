@@ -22,6 +22,7 @@ import EditRequest from './pages/EditRequest';
 import AdminControls from './pages/AdminControls';
 import EditRequestForm from './pages/EditRequestForm';
 import AddUser from './pages/AddUser';
+import ResumeExtractor from './pages/ResumeExtractor';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -149,6 +150,13 @@ function App() {
               <ProtectedRoute>
                 <Layout toggleTheme={toggleTheme} theme={theme}>
                   <AddUser />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/resume-extractor" element={
+              <ProtectedRoute>
+                <Layout toggleTheme={toggleTheme} theme={theme}>
+                  <ResumeExtractor />
                 </Layout>
               </ProtectedRoute>
             } />

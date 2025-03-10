@@ -444,15 +444,15 @@ input:checked + .toggle-slider:before {
 }
 
 .profile-avatar {
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background-color: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   margin-right: 20px;
 }
 

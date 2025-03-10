@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { viewRequestService, ResourceRequest } from '../services/viewRequestService';
+import { X } from 'lucide-react';
 
 const ViewRequest: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -15,6 +16,8 @@ const ViewRequest: React.FC = () => {
     const [status, setStatus] = useState('');
     const [feedback, setFeedback] = useState('');
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [showJDDialog, setShowJDDialog] = useState(false);
+    const [generatedJD, setGeneratedJD] = useState('');
 
     const parseSlots = (slots: string) => {
         try {
@@ -108,6 +111,34 @@ const ViewRequest: React.FC = () => {
 
     const handleDisabledClick = (action: string) => {
         toast.info(`Cannot ${action} request. Status is ${request?.Status}.`);
+    };
+
+    const handleGenerateJD = () => {
+        const jd = `
+We are looking for a dedicated ${request?.JobDescription.Role} to join our team in a ${request?.JobDescription.ModeOfWork.ModeOfWorkName} environment. The ideal candidate should have a ${request?.JobDescription.Education.EducationName} with ${request?.JobDescription.Experience} years of experience.
+This role requires strong proficiency in ${request?.JobDescription.RequiredTechnicalSkills}, with familiarity in ${request?.JobDescription.PreferredTechnicalSkills} being highly advantageous.
+The successful applicant will be responsible for ${request?.JobDescription.Responsibility}. Candidates with relevant ${request?.JobDescription.Certifications} certifications are preferred.
+This is an immediate requirement for an ongoing project, and additional incentives may be offered to the right candidate.
+Job Type: ${request?.JobDescription.JobType.JobTypeName}
+Location: ${request?.JobDescription.Location}
+Notice Period: ${request?.JobDescription.NoticePeriod.NoticePeriodName}
+Salary: ${request?.updateTracker[0].BudgetRanges.BudgetName}
+Open Positions: ${request?.JobDescription.OpenPositions}
+
+Interview Process:
+
+Level 1 Interview Panel: ${request?.updateTracker[0].Employee_UpdateTracker_Level1PanelIDToEmployee.FirstName} ${request?.updateTracker[0].Employee_UpdateTracker_Level1PanelIDToEmployee.LastName}
+Available slots: ${parseSlots(request?.updateTracker[0].Level1PanelInterviewSlots)}
+
+Level 2 Interview Panel: ${request?.updateTracker[0].Employee_UpdateTracker_Level2PanelIDToEmployee.FirstName} ${request?.updateTracker[0].Employee_UpdateTracker_Level2PanelIDToEmployee.LastName}
+Available slots: ${parseSlots(request?.updateTracker[0].Level2PanelInterviewSlots)}
+        `;
+        setGeneratedJD(jd);
+        setShowJDDialog(true);
+    };
+
+    const closeJDDialog = () => {
+        setShowJDDialog(false);
     };
 
     if (loading) {
@@ -256,7 +287,7 @@ const ViewRequest: React.FC = () => {
                         </div>
                     </div>
 
-                    {user?.Role == 'Recruiter' && request?.Employee.Login.Role !== user?.Role && (
+                    {user?.Role == 'Recruiter' && (
                         <div className="card">
                             <div className="card-body">
                                 <div className="form-group small-input">
@@ -299,23 +330,34 @@ const ViewRequest: React.FC = () => {
 
                 <div className="edit-button-container">
                     {(user?.Role !== 'Recruiter' && user?.Role !== 'Admin') || request?.EmployeeID === parseInt(user?.EmployeeID || '') ? (
+                        <>
+                            <button
+                                type="button"
+                                className="btn btn-outline small-btn"
+                                onClick={(e) => {
+                                    if (request.Status === 'Accepted' || request.Status === 'Rejected') {
+                                        e.preventDefault(); // Prevents unintended behavior
+                                        handleDisabledClick('edit');
+                                    } else {
+                                        handleEdit();
+                                    }
+                                }}
+                            >
+                                Edit Request
+                            </button>
+                            <span style={{ marginRight: '10px' }}></span>
+                        </>
+                    ) : null}
+                    {request.Status === 'Accepted' && (
                         <button
                             type="button"
                             className="btn btn-outline small-btn"
-                            onClick={(e) => {
-                                if (request.Status === 'Accepted' || request.Status === 'Rejected') {
-                                    e.preventDefault(); // Prevents unintended behavior
-                                    handleDisabledClick('edit');
-                                } else {
-                                    handleEdit();
-                                }
-                            }}
+                            onClick={handleGenerateJD}
                         >
-                            Edit Request
+                            Generate JD
                         </button>
-                    ) : null}
+                    )}
                 </div>
-
             </div>
 
             {showDeleteDialog && (
@@ -329,6 +371,18 @@ const ViewRequest: React.FC = () => {
                                 Delete
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {showJDDialog && (
+                <div className="dialog-overlay">
+                    <div className="dialog large-dialog">
+                        <div className="dialog-header">
+                            <h3>Job Description</h3>
+                            <X size={20} className="close-icon" onClick={closeJDDialog} />
+                        </div>
+                        <pre className="jd-content custom-font">{generatedJD}</pre>
                     </div>
                 </div>
             )}
