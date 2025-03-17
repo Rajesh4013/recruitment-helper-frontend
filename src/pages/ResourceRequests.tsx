@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { fetchResourceRequests, deleteResourceRequest } from '../services/resourceRequestService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './ResourceRequests.css'; // Import the CSS file
+import './ResourceRequests.css';
 
 interface ResourceRequest {
   JobDescriptionID: number;
