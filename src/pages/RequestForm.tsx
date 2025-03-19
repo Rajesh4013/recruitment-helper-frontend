@@ -5,9 +5,12 @@ import SkillsInput from '../components/SkillsInput';
 import { employeeService, EmployeeDetails, Employee } from '../services/employeeService';
 import { lookupService, LookupItem } from '../services/lookupService';
 import InterviewSlotInput from '../components/InterviewSlotInput';
-import { insertRequestFormData } from '../services/requestFormService';
+import { insertRequestFormData, getTitle } from '../services/requestFormService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Sparkles } from 'lucide-react';
+import { color } from 'chart.js/helpers';
+import { dir } from 'console';
 
 const RequestForm: React.FC = () => {
   const navigate = useNavigate();
@@ -139,6 +142,8 @@ const RequestForm: React.FC = () => {
     }));
   };
 
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formattedData = {
@@ -229,6 +234,19 @@ const RequestForm: React.FC = () => {
     }));
   };
 
+  const handleGetTitle = async () => {
+    try {
+      // create a copy of formData excluding "requestTitle"
+      const { requestTitle, ...dataForTitle } = formData;
+      const response = await getTitle(dataForTitle);
+      console.log('Title response:', response);
+      // assume response returns a title string; update as needed based on the response shape
+      setFormData(prev => ({ ...prev, requestTitle: response.data || response }));
+    } catch (err) {
+      console.error('Error fetching title:', err);
+    }
+  };
+
   // if (user?.Role === 'Recruiter') {
   //   return <div>You do not have permission to access this form.</div>;
   // }
@@ -243,16 +261,37 @@ const RequestForm: React.FC = () => {
       </nav>
       <form onSubmit={handleSubmit}>
         <div className="card">
-          <input
-            type="text"
-            name="requestTitle"
-            placeholder="Request Title"
-            id="requestTitle"
-            value={formData.requestTitle}
-            className="request-title"
-            onChange={handleChange}
-            required
-          />
+          {/* Title Input with icon/button */}
+          <div className="form-group" style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', }}>
+            <input
+              type="text"
+              name="requestTitle"
+              placeholder="Request Title"
+              id="requestTitle"
+              value={formData.requestTitle}
+              className="request-title"
+              onChange={handleChange}
+              style={{}}
+              required
+            />
+            {/* Updated Button to fetch title */}
+            <button
+  type="button"
+  onClick={handleGetTitle}
+  style={{ 
+    marginLeft: 'auto', 
+    border: 'none', 
+    cursor: 'pointer', 
+    borderRadius: '15px', 
+    // backgroundColor: '#f0f0f0',
+    padding: '5px', 
+  }}
+  title="Fetch Title"
+>
+  <Sparkles style={{ color: '#2980b9' }} />
+</button>
+
+          </div>
           <div className="form-section">
             <div className="form-row three-cols">
               <div className="form-col">

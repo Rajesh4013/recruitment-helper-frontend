@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 export const insertRequestFormData = async (data: any) => {
@@ -8,6 +10,22 @@ export const insertRequestFormData = async (data: any) => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const responseData = await response.json();
+    return responseData;
+};
+
+export const getTitle = async (data: any) => {
+    const response = await fetch(`${VITE_API_URL}/subject`, {
+        method: 'POST', // POST must be used here to send data in the body
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(data), // data is sent via the body
     });
     if (!response.ok) {
         throw new Error('Network response was not ok');
